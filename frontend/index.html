@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INDUCTA — Premium Electric Induction Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<!-- Razorpay Checkout SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root {
+  --black:#0a0a0a; --white:#f5f2ee; --orange:#e85d04; --orange-light:#f48c42;
+  --gray:#6b6560; --gray-light:#c9c4bc;
+  --s1:#141414; --s2:#1e1e1e; --s3:#282828;
+  --green:#22c55e; --red:#ef4444;
+  --border:rgba(245,242,238,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px;}
+
+#toast{position:fixed;bottom:2rem;right:2rem;z-index:9999;background:var(--orange);color:#fff;
+  padding:.75rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem;
+  transform:translateY(6rem);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.error{background:var(--red);}
+
+/* Loading spinner */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Loading overlay */
+#page-loader{position:fixed;inset:0;background:rgba(10,10,10,.85);z-index:9998;
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+#page-loader.show{display:flex;}
+#page-loader p{color:var(--gray-light);font-size:.9rem;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;
+  justify-content:space-between;padding:0 2.5rem;height:64px;
+  background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.1em;color:var(--white);cursor:pointer;}
+.nav-logo span{color:var(--orange);}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{color:var(--gray-light);text-decoration:none;font-size:.88rem;font-weight:500;letter-spacing:.04em;transition:color .2s;cursor:pointer;}
+.nav-links a:hover{color:var(--white);}
+.nav-actions{display:flex;gap:1rem;align-items:center;}
+.nav-icon-btn{background:none;border:none;color:var(--gray-light);cursor:pointer;padding:.4rem;
+  border-radius:6px;transition:color .2s,background .2s;position:relative;font-size:1.2rem;}
+.nav-icon-btn:hover{color:var(--white);background:var(--s3);}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--orange);color:#fff;
+  border-radius:50%;width:16px;height:16px;font-size:.65rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;}
+.btn-primary{background:var(--orange);color:#fff;border:none;padding:.6rem 1.4rem;
+  border-radius:8px;font-weight:600;font-size:.88rem;cursor:pointer;
+  transition:background .2s,transform .15s;letter-spacing:.03em;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{background:var(--orange-light);}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-secondary{background:transparent;color:var(--white);border:1px solid var(--border);
+  padding:.6rem 1.4rem;border-radius:8px;font-weight:500;font-size:.88rem;
+  cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-secondary:hover{border-color:var(--orange);color:var(--orange);}
+
+.page{display:none;}
+.page.active{display:block;}
+
+#hero-section{min-height:100vh;padding-top:64px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(232,93,4,.18) 0%,transparent 70%),
+             radial-gradient(ellipse 40% 40% at 20% 80%,rgba(232,93,4,.08) 0%,transparent 60%);}
+.hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(245,242,238,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(245,242,238,.03) 1px,transparent 1px);
+  background-size:60px 60px;}
+.hero-content{position:relative;z-index:1;flex:1;display:flex;align-items:center;
+  padding:4rem 2.5rem 2rem;max-width:1400px;margin:0 auto;width:100%;gap:4rem;}
+.hero-text{flex:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(232,93,4,.15);
+  border:1px solid rgba(232,93,4,.3);color:var(--orange-light);padding:.35rem 1rem;
+  border-radius:100px;font-size:.8rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:1.5rem;}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,7vw,7rem);
+  line-height:.95;letter-spacing:.03em;margin-bottom:1.5rem;}
+.hero-h1 em{font-style:normal;color:var(--orange);display:block;}
+.hero-sub{color:var(--gray-light);font-size:1.1rem;line-height:1.7;max-width:480px;margin-bottom:2.5rem;font-weight:300;}
+.hero-sub strong{color:var(--white);font-weight:500;}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+.btn-hero{background:var(--orange);color:#fff;border:none;padding:1rem 2.2rem;border-radius:10px;
+  font-weight:700;font-size:1rem;cursor:pointer;transition:all .25s;letter-spacing:.04em;font-family:'DM Sans',sans-serif;}
+.btn-hero:hover{background:var(--orange-light);transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,93,4,.4);}
+.btn-hero-outline{background:transparent;color:var(--white);border:1.5px solid rgba(245,242,238,.25);
+  padding:1rem 2.2rem;border-radius:10px;font-weight:600;font-size:1rem;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;}
+.btn-hero-outline:hover{border-color:var(--orange);color:var(--orange);}
+.hero-stats{display:flex;gap:2.5rem;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--white);line-height:1;letter-spacing:.05em;}
+.stat-num span{color:var(--orange);}
+.stat-label{color:var(--gray);font-size:.78rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-top:.2rem;}
+.hero-visual{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+.hero-card-3d{width:420px;height:420px;background:linear-gradient(135deg,var(--s2) 0%,var(--s1) 100%);
+  border-radius:32px;border:1px solid var(--border);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;overflow:visible;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 60px rgba(232,93,4,.15);}
+.hero-card-3d::before{content:'';position:absolute;inset:-1px;background:linear-gradient(135deg,rgba(232,93,4,.3),transparent 50%);border-radius:32px;pointer-events:none;}
+.hero-product-label{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--gray-light);margin-top:.5rem;font-style:italic;}
+.floating-tag{position:absolute;background:var(--s3);border:1px solid var(--border);border-radius:12px;padding:.6rem 1rem;font-size:.8rem;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:floatAnim 3s ease-in-out infinite;white-space:nowrap;}
+.floating-tag.t1{top:20px;right:-40px;animation-delay:0s;}
+.floating-tag.t2{bottom:40px;left:-50px;animation-delay:1.5s;}
+.floating-tag .tag-val{font-weight:700;color:var(--orange);}
+@keyframes floatAnim{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+.marquee-bar{background:var(--orange);padding:.7rem 0;overflow:hidden;white-space:nowrap;}
+.marquee-inner{display:inline-flex;animation:marqueeAnim 25s linear infinite;}
+.marquee-item{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;color:#fff;padding:0 2rem;}
+.marquee-dot{color:rgba(255,255,255,.4);}
+@keyframes marqueeAnim{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+.section{padding:5rem 2.5rem;max-width:1400px;margin:0 auto;}
+.section-header{margin-bottom:3rem;}
+.section-tag{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.75rem;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:.05em;line-height:1;}
+.section-sub{color:var(--gray);font-size:.95rem;margin-top:.75rem;font-weight:300;}
+
+.filter-bar{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;align-items:center;}
+.filter-chip{background:var(--s2);border:1px solid var(--border);color:var(--gray-light);padding:.45rem 1.1rem;border-radius:100px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.filter-chip:hover{border-color:var(--orange);color:var(--orange);}
+.filter-chip.active{background:var(--orange);border-color:var(--orange);color:#fff;}
+.sort-select{margin-left:auto;background:var(--s2);border:1px solid var(--border);color:var(--gray-light);padding:.45rem 1rem;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;}
+.product-card{background:var(--s1);border:1px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 30px rgba(232,93,4,.1);border-color:rgba(232,93,4,.3);}
+.product-img{height:200px;background:var(--s2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.product-badge-tag{position:absolute;top:12px;left:12px;background:var(--orange);color:#fff;padding:.25rem .7rem;border-radius:6px;font-size:.72rem;font-weight:700;letter-spacing:.05em;}
+.product-badge-tag.new{background:var(--green);}.product-badge-tag.sale{background:var(--red);}
+.wishlist-btn{position:absolute;top:12px;right:12px;background:rgba(10,10,10,.7);border:1px solid var(--border);color:var(--gray-light);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.wishlist-btn:hover{color:#ef4444;border-color:#ef4444;}
+.wishlist-btn.wishlisted{color:#ef4444;border-color:#ef4444;background:rgba(239,68,68,.1);}
+.product-info{padding:1.25rem;}
+.product-brand{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:.3rem;}
+.product-name{font-family:'DM Serif Display',serif;font-size:1.05rem;line-height:1.3;margin-bottom:.5rem;}
+.product-specs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;}
+.spec-tag{background:var(--s2);border:1px solid var(--border);color:var(--gray-light);padding:.2rem .55rem;border-radius:4px;font-size:.72rem;font-weight:500;}
+.product-price-row{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;}
+.product-price{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.05em;}
+.product-price .cur{font-size:1rem;vertical-align:super;color:var(--orange);}
+.product-old-price{font-size:.82rem;color:var(--gray);text-decoration:line-through;margin-left:.3rem;}
+.add-btn{background:var(--orange);color:#fff;border:none;padding:.55rem 1.1rem;border-radius:8px;font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.add-btn:hover{background:var(--orange-light);transform:scale(1.05);}
+.stars{color:#fbbf24;font-size:.8rem;}
+.review-count{color:var(--gray);font-size:.75rem;margin-left:.3rem;}
+
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;}
+.why-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:1.75rem;transition:border-color .2s,transform .2s;}
+.why-card:hover{border-color:rgba(232,93,4,.4);transform:translateY(-2px);}
+.why-icon{font-size:2rem;margin-bottom:1rem;display:block;}
+.why-title{font-weight:700;font-size:1rem;margin-bottom:.5rem;}
+.why-desc{color:var(--gray);font-size:.88rem;line-height:1.6;font-weight:300;}
+
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1100;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:95vw;background:var(--s1);border-left:1px solid var(--border);z-index:1200;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.cart-drawer.open{transform:translateX(0);}
+.drawer-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.drawer-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em;}
+.close-btn{background:var(--s3);border:none;color:var(--gray-light);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1.1rem;transition:all .2s;}
+.close-btn:hover{color:var(--white);}
+.cart-items-wrap{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
+.cart-item{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);}
+.cart-item-img{width:64px;height:64px;border-radius:10px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cart-item-info{flex:1;}
+.cart-item-name{font-weight:600;font-size:.9rem;margin-bottom:.25rem;}
+.cart-item-brand{color:var(--orange);font-size:.75rem;font-weight:600;margin-bottom:.4rem;}
+.cart-item-price{font-weight:700;font-size:.95rem;}
+.qty-control{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;}
+.qty-btn{background:var(--s3);border:none;color:var(--white);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:.9rem;font-weight:700;transition:background .2s;}
+.qty-btn:hover{background:var(--orange);}
+.qty-num{font-size:.88rem;font-weight:600;min-width:1.5rem;text-align:center;}
+.remove-btn{background:none;border:none;color:var(--gray);cursor:pointer;font-size:.9rem;padding:.3rem;transition:color .2s;align-self:flex-start;}
+.remove-btn:hover{color:var(--red);}
+.cart-footer-wrap{padding:1.5rem;border-top:1px solid var(--border);}
+.cart-total-row{display:flex;justify-content:space-between;font-size:.88rem;color:var(--gray-light);margin-bottom:.5rem;}
+.cart-grand{display:flex;justify-content:space-between;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em;margin:.75rem 0 1.25rem;}
+.cart-grand span:last-child{color:var(--orange);}
+.checkout-btn{width:100%;background:var(--orange);color:#fff;border:none;padding:1rem;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+.checkout-btn:hover{background:var(--orange-light);}
+.empty-cart{text-align:center;padding:3rem 1rem;color:var(--gray);}
+.empty-icon{font-size:3rem;margin-bottom:1rem;display:block;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.modal-overlay.open{display:flex;}
+.auth-modal{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:460px;max-width:95vw;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.6);}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:var(--s3);border:none;color:var(--gray-light);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1.1rem;transition:color .2s;}
+.modal-close:hover{color:var(--white);}
+.auth-tabs{display:flex;margin-bottom:2rem;background:var(--s2);border-radius:10px;padding:.3rem;}
+.auth-tab{flex:1;padding:.6rem;text-align:center;border:none;background:none;color:var(--gray);font-weight:600;font-size:.9rem;cursor:pointer;border-radius:8px;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.auth-tab.active{background:var(--orange);color:#fff;}
+.form-group{margin-bottom:1.25rem;}
+.form-label{display:block;font-size:.82rem;font-weight:600;color:var(--gray-light);margin-bottom:.5rem;letter-spacing:.04em;}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--white);padding:.8rem 1rem;border-radius:10px;font-size:.92rem;font-family:'DM Sans',sans-serif;transition:border-color .2s;outline:none;}
+.form-input:focus{border-color:var(--orange);}
+.form-input::placeholder{color:var(--gray);}
+.form-submit{width:100%;background:var(--orange);color:#fff;border:none;padding:.9rem;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;letter-spacing:.04em;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.form-submit:hover{background:var(--orange-light);}
+.form-submit:disabled{opacity:.6;cursor:not-allowed;}
+.auth-divider{text-align:center;color:var(--gray);font-size:.82rem;margin:1rem 0;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:calc(50% - 2rem);height:1px;background:var(--border);}
+.auth-divider::before{left:0;}.auth-divider::after{right:0;}
+.social-btn{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--white);padding:.8rem;border-radius:10px;font-weight:500;font-size:.9rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:.75rem;transition:border-color .2s;}
+.social-btn:hover{border-color:var(--orange);}
+.form-error{color:var(--red);font-size:.82rem;margin-top:.5rem;display:none;}
+.form-error.show{display:block;}
+
+#page-detail{padding-top:64px;}
+.detail-container{max-width:1200px;margin:0 auto;padding:3rem 2.5rem;}
+.breadcrumb{display:flex;gap:.5rem;align-items:center;font-size:.82rem;color:var(--gray);margin-bottom:2rem;}
+.breadcrumb a{color:var(--gray);text-decoration:none;cursor:pointer;}
+.breadcrumb a:hover{color:var(--orange);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.detail-img-box{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:3rem;display:flex;align-items:center;justify-content:center;aspect-ratio:1;}
+.detail-brand{font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:.5rem;}
+.detail-title{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1.2;margin-bottom:.75rem;}
+.detail-rating-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;}
+.detail-price-area{margin-bottom:2rem;}
+.detail-price{font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1;letter-spacing:.05em;}
+.detail-price .cur{font-size:1.5rem;vertical-align:super;color:var(--orange);}
+.detail-old{color:var(--gray);text-decoration:line-through;font-size:1.1rem;margin-left:.5rem;}
+.detail-save{color:var(--green);font-weight:700;font-size:.88rem;margin-top:.3rem;}
+.detail-features{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:2rem;}
+.feature-item{display:flex;gap:.6rem;align-items:flex-start;background:var(--s1);border:1px solid var(--border);padding:.75rem;border-radius:10px;font-size:.85rem;}
+.feature-icon{color:var(--orange);flex-shrink:0;}
+.detail-actions{display:flex;gap:1rem;margin-bottom:2rem;}
+.detail-add-btn{flex:1;background:var(--orange);color:#fff;border:none;padding:1rem;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.detail-add-btn:hover{background:var(--orange-light);}
+.detail-wish-btn{background:var(--s1);border:1px solid var(--border);color:var(--gray-light);padding:1rem 1.25rem;border-radius:12px;cursor:pointer;font-size:1.2rem;transition:all .2s;}
+.detail-wish-btn:hover,.detail-wish-btn.wishlisted{border-color:var(--red);color:var(--red);}
+.specs-table{width:100%;border-collapse:collapse;margin-top:1rem;}
+.specs-table tr{border-bottom:1px solid var(--border);}
+.specs-table td{padding:.65rem .5rem;font-size:.88rem;}
+.specs-table td:first-child{color:var(--gray);width:45%;}
+.specs-table td:last-child{font-weight:500;}
+
+#page-profile{padding-top:64px;}
+.profile-container{max-width:1000px;margin:0 auto;padding:3rem 2.5rem;}
+.profile-header-card{background:linear-gradient(135deg,var(--s2) 0%,var(--s1) 100%);border:1px solid var(--border);border-radius:20px;padding:2rem;display:flex;gap:1.5rem;align-items:center;margin-bottom:2rem;position:relative;overflow:hidden;}
+.profile-header-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(232,93,4,.15),transparent 70%);pointer-events:none;}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange-light));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#fff;flex-shrink:0;position:relative;z-index:1;}
+.profile-name{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.05em;}
+.profile-email{color:var(--gray);font-size:.88rem;margin-top:.2rem;}
+.profile-joined{color:var(--gray);font-size:.78rem;margin-top:.5rem;}
+.ptabs{display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border);}
+.ptab{background:none;border:none;color:var(--gray);padding:.75rem 1.25rem;font-weight:600;font-size:.9rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-family:'DM Sans',sans-serif;margin-bottom:-1px;}
+.ptab.active{color:var(--orange);border-bottom-color:var(--orange);}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+.order-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1rem;transition:border-color .2s;}
+.order-card:hover{border-color:rgba(232,93,4,.3);}
+.order-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;}
+.order-id-label{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;}
+.order-date{color:var(--gray);font-size:.82rem;margin-top:.2rem;}
+.order-status{padding:.3rem .8rem;border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.05em;}
+.status-delivered{background:rgba(34,197,94,.15);color:var(--green);}
+.status-processing{background:rgba(232,93,4,.15);color:var(--orange);}
+.status-shipped{background:rgba(59,130,246,.15);color:#60a5fa;}
+.status-pending{background:rgba(251,191,36,.15);color:#fbbf24;}
+.order-lines{display:flex;gap:.75rem;flex-direction:column;margin-bottom:1rem;}
+.order-line{display:flex;gap:1rem;align-items:center;background:var(--s2);padding:.75rem;border-radius:10px;}
+.order-thumb{width:44px;height:44px;border-radius:8px;background:var(--s3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.order-line-details{flex:1;}
+.order-line-name{font-size:.88rem;font-weight:600;}
+.order-line-brand{color:var(--orange);font-size:.75rem;}
+.order-total-row{display:flex;justify-content:space-between;color:var(--gray-light);font-size:.88rem;padding-top:.75rem;border-top:1px solid var(--border);}
+.order-total-row strong{color:var(--white);font-size:1rem;}
+.addr-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:.75rem;}
+.addr-card h4{font-weight:700;margin-bottom:.4rem;}
+.addr-card p{color:var(--gray);font-size:.88rem;line-height:1.6;}
+
+#page-checkout{padding-top:64px;}
+.checkout-wrap{max-width:1100px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start;}
+.co-sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.order-summary-box{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:2rem;position:sticky;top:80px;}
+.co-item-row{display:flex;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--border);align-items:center;}
+.co-item-img{width:52px;height:52px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.co-row{display:flex;justify-content:space-between;font-size:.88rem;color:var(--gray-light);padding:.4rem 0;}
+.co-row.grand{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em;color:var(--white);padding-top:.75rem;border-top:1px solid var(--border);}
+.co-row.grand span:last-child{color:var(--orange);}
+.pay-opt{display:flex;align-items:center;gap:.75rem;cursor:pointer;background:var(--s1);border:1px solid var(--border);padding:1rem;border-radius:12px;margin-bottom:.75rem;transition:border-color .2s;}
+.pay-opt:hover{border-color:rgba(232,93,4,.3);}
+.pay-opt input[type=radio]{accent-color:var(--orange);}
+.place-btn{width:100%;background:var(--orange);color:#fff;border:none;padding:1.1rem;border-radius:12px;font-weight:700;font-size:1.05rem;cursor:pointer;margin-top:1.5rem;transition:background .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:.6rem;}
+.place-btn:hover{background:var(--orange-light);}
+.place-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+#page-success{padding-top:64px;}
+.success-wrap{text-align:center;padding:6rem 2rem;max-width:500px;margin:0 auto;}
+.success-icon{font-size:4rem;margin-bottom:1.5rem;display:block;}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.05em;margin-bottom:.75rem;}
+.success-sub{color:var(--gray);font-size:1rem;line-height:1.7;margin-bottom:2rem;}
+.success-order-box{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:1rem 2rem;margin-bottom:2rem;display:inline-block;}
+.success-order-box span{color:var(--orange);font-weight:700;}
+.success-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+footer{background:var(--s1);border-top:1px solid var(--border);padding:4rem 2.5rem 2rem;}
+.footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;margin-bottom:1rem;}
+.footer-logo span{color:var(--orange);}
+.footer-desc{color:var(--gray);font-size:.88rem;line-height:1.7;font-weight:300;}
+.footer-col-title{font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem;}
+.footer-links{list-style:none;}
+.footer-links li{margin-bottom:.6rem;}
+.footer-links a{color:var(--gray);text-decoration:none;font-size:.88rem;transition:color .2s;cursor:pointer;}
+.footer-links a:hover{color:var(--orange);}
+.footer-bottom{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid var(--border);color:var(--gray);font-size:.82rem;}
+
+@media(max-width:900px){
+  .hero-content{flex-direction:column;padding:2rem 1.5rem;}.hero-visual{display:none;}
+  .detail-grid,.checkout-wrap{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem;}
+  nav{padding:0 1.5rem;}.nav-links{display:none;}
+  .section{padding:3rem 1.5rem;}
+}
+@media(max-width:600px){
+  .hero-h1{font-size:3rem;}.footer-grid{grid-template-columns:1fr;}
+  .profile-header-card{flex-direction:column;text-align:center;}
+  .detail-features{grid-template-columns:1fr;}.checkout-wrap{padding:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader"><div class="spinner" style="width:36px;height:36px;border-width:3px"></div><p>Loading...</p></div>
+
+<div id="toast"></div>
+
+<nav>
+  <div class="nav-logo" onclick="goPage('page-home')">INDUCT<span>A</span></div>
+  <div class="nav-links">
+    <a onclick="goPage('page-home');scrollToProducts()">Products</a>
+    <a onclick="goPage('page-home')">Deals</a>
+    <a onclick="goPage('page-home')">Support</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-icon-btn" onclick="openCart()" title="Cart">🛒<span class="badge" id="cart-badge" style="display:none">0</span></button>
+    <button class="nav-icon-btn" id="btn-profile" onclick="handleProfileNav()" title="Profile" style="display:none">👤</button>
+    <button class="btn-primary" id="btn-signin" onclick="openAuth()">Sign In</button>
+  </div>
+</nav>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="drawer-header"><div class="drawer-title">YOUR CART</div><button class="close-btn" onclick="closeCart()">✕</button></div>
+  <div class="cart-items-wrap" id="cart-items-wrap"></div>
+  <div id="cart-footer-area"></div>
+</div>
+
+<div class="modal-overlay" id="auth-modal">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="atab-reg" onclick="switchAuthTab('reg')">Create Account</button>
+    </div>
+    <div id="aform-login">
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="f-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="f-pass" placeholder="••••••••"></div>
+      <div class="form-error" id="login-error"></div>
+      <button class="form-submit" id="login-btn" onclick="doLogin()">Sign In to INDUCTA</button>
+      <div class="auth-divider">or</div>
+      <button class="social-btn" onclick="toast('Google login requires OAuth setup — see README','error')">🔵 Continue with Google</button>
+    </div>
+    <div id="aform-reg" style="display:none">
+      <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="r-name" placeholder="Arjun Sharma"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="r-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="r-pass" placeholder="Min. 8 characters"></div>
+      <div class="form-group"><label class="form-label">Mobile</label><input type="tel" class="form-input" id="r-phone" placeholder="+91 98765 43210"></div>
+      <div class="form-error" id="reg-error"></div>
+      <button class="form-submit" id="reg-btn" onclick="doRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <section id="hero-section">
+    <div class="hero-bg"></div><div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">⚡ Gas Prices Rising — Switch Smart</div>
+        <h1 class="hero-h1">Cook Smarter.<em>Save More.</em>Live Better.</h1>
+        <p class="hero-sub">With <strong>gas cylinder prices surging 40%</strong> due to global conflict, electric induction is the intelligent upgrade. Save ₹8,000+ annually while cooking faster and safer.</p>
+        <div class="hero-ctas">
+          <button class="btn-hero" onclick="scrollToProducts()">Shop Inductions</button>
+          <button class="btn-hero-outline" onclick="scrollToProducts()">View Deals</button>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-num">40<span>%</span></div><div class="stat-label">Gas Price Rise</div></div>
+          <div><div class="stat-num">₹8<span>K+</span></div><div class="stat-label">Annual Savings</div></div>
+          <div><div class="stat-num">50<span>+</span></div><div class="stat-label">Models Available</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card-3d">
+          <svg viewBox="0 0 200 200" width="260" height="260" fill="none">
+            <rect x="20" y="50" width="160" height="100" rx="16" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
+            <rect x="30" y="60" width="140" height="80" rx="10" fill="#141414"/>
+            <circle cx="80" cy="95" r="26" stroke="#e85d04" stroke-width="2.5" opacity=".7"/>
+            <circle cx="80" cy="95" r="18" stroke="#f48c42" stroke-width="1.5" opacity=".5"/>
+            <circle cx="80" cy="95" r="10" fill="#e85d04" opacity=".3"/>
+            <circle cx="80" cy="95" r="5" fill="#e85d04" opacity=".6"/>
+            <circle cx="135" cy="95" r="18" stroke="#e85d04" stroke-width="2" opacity=".5"/>
+            <circle cx="135" cy="95" r="11" stroke="#f48c42" stroke-width="1.5" opacity=".4"/>
+            <circle cx="135" cy="95" r="5" fill="#e85d04" opacity=".4"/>
+            <circle cx="50" cy="143" r="5" fill="#333"/><circle cx="66" cy="143" r="5" fill="#e85d04"/><circle cx="82" cy="143" r="5" fill="#333"/>
+            <rect x="100" y="135" width="60" height="16" rx="4" fill="#1e1e1e" stroke="#333"/>
+            <text x="130" y="147" font-family="monospace" font-size="9" fill="#e85d04" text-anchor="middle">2200W</text>
+          </svg>
+          <div class="hero-product-label">Premium Induction Cooktop</div>
+          <div class="floating-tag t1"><div>Energy Efficient</div><div class="tag-val">90% ⚡</div></div>
+          <div class="floating-tag t2"><div>Save vs Gas</div><div class="tag-val">₹8K/yr 💰</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="marquee-bar"><div class="marquee-inner" id="marquee-inner"></div></div>
+  <div class="section">
+    <div class="section-header"><div class="section-tag">Why Switch?</div><div class="section-title">GAS IS EXPENSIVE.<br>INDUCTION IS SMART.</div></div>
+    <div class="why-grid">
+      <div class="why-card"><span class="why-icon">💰</span><div class="why-title">Save ₹8,000+ Annually</div><div class="why-desc">With gas prices up 40%, induction cuts your fuel bill dramatically. Pay back the cooktop cost in under 8 months.</div></div>
+      <div class="why-card"><span class="why-icon">⚡</span><div class="why-title">90% Energy Efficiency</div><div class="why-desc">Gas wastes 60% of heat. Induction transfers 90% directly into your cookware — faster and more precise.</div></div>
+      <div class="why-card"><span class="why-icon">🔒</span><div class="why-title">Safer for Every Home</div><div class="why-desc">No open flames. No gas leaks. Automatic shut-off. Child lock features. The safest way to cook.</div></div>
+      <div class="why-card"><span class="why-icon">🌱</span><div class="why-title">Eco-Friendly Cooking</div><div class="why-desc">Zero combustion emissions. Reduce your carbon footprint. The planet-smart choice for modern Indian homes.</div></div>
+    </div>
+  </div>
+  <div class="section" id="products-section">
+    <div class="section-header"><div class="section-tag">Our Collection</div><div class="section-title">FIND YOUR PERFECT<br>INDUCTION</div></div>
+    <div class="filter-bar">
+      <button class="filter-chip active" onclick="setFilter('all',this)">All Products</button>
+      <button class="filter-chip" onclick="setFilter('budget',this)">Under ₹3,000</button>
+      <button class="filter-chip" onclick="setFilter('mid',this)">₹3,000 – ₹7,000</button>
+      <button class="filter-chip" onclick="setFilter('premium',this)">Premium</button>
+      <button class="filter-chip" onclick="setFilter('portable',this)">Portable</button>
+      <button class="filter-chip" onclick="setFilter('builtin',this)">Built-In</button>
+      <select class="sort-select" onchange="setSort(this.value)">
+        <option value="default">Sort: Featured</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="rating">Top Rated</option>
+      </select>
+    </div>
+    <div class="products-grid" id="products-grid"><div style="text-align:center;padding:3rem;color:var(--gray)"><div class="spinner" style="width:32px;height:32px;margin:0 auto 1rem"></div><p>Loading products...</p></div></div>
+  </div>
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-logo">INDUCT<span>A</span></div><p class="footer-desc">India's most trusted electric induction store. Switch today, save tomorrow.</p></div>
+      <div><div class="footer-col-title">Products</div><ul class="footer-links"><li><a onclick="setFilter('budget',null);scrollToProducts()">Budget Range</a></li><li><a onclick="setFilter('mid',null);scrollToProducts()">Mid Range</a></li><li><a onclick="setFilter('premium',null);scrollToProducts()">Premium</a></li><li><a onclick="setFilter('builtin',null);scrollToProducts()">Built-In</a></li></ul></div>
+      <div><div class="footer-col-title">Support</div><ul class="footer-links"><li><a onclick="goPage('page-profile');switchPTab('orders',null)">Track Order</a></li><li><a onclick="toast('Email: support@inducta.in')">Returns</a></li><li><a onclick="toast('WhatsApp: +91 98765 43210')">Contact Us</a></li></ul></div>
+      <div><div class="footer-col-title">Company</div><ul class="footer-links"><li><a onclick="toast('Coming soon!')">About</a></li><li><a onclick="toast('Coming soon!')">Blog</a></li><li><a onclick="toast('Coming soon!')">Privacy Policy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><div>© 2026 INDUCTA. All rights reserved.</div><div>Made with ⚡ for a gas-free India</div></div>
+  </footer>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="page-detail">
+  <div class="detail-container">
+    <div class="breadcrumb"><a onclick="goPage('page-home')">Home</a><span>›</span><a onclick="scrollToProducts()">Products</a><span>›</span><span id="d-crumb"></span></div>
+    <div class="detail-grid">
+      <div class="detail-img-box" id="d-img"></div>
+      <div>
+        <div class="detail-brand" id="d-brand"></div>
+        <h1 class="detail-title" id="d-title"></h1>
+        <div class="detail-rating-row"><span class="stars" id="d-stars"></span><span id="d-rating" style="font-weight:600"></span><span id="d-reviews" style="color:var(--gray);font-size:.85rem"></span></div>
+        <div class="detail-price-area"><div><span class="detail-price" id="d-price"></span><span class="detail-old" id="d-old"></span></div><div class="detail-save" id="d-save"></div></div>
+        <div class="detail-features" id="d-features"></div>
+        <div class="detail-actions">
+          <button class="detail-add-btn" onclick="addDetailToCart()">Add to Cart 🛒</button>
+          <button class="detail-wish-btn" id="d-wish" onclick="toggleDetailWish()">♡</button>
+        </div>
+        <div style="font-weight:700;font-size:.88rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-light);margin-bottom:1rem">Specifications</div>
+        <table class="specs-table" id="d-specs"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="profile-container">
+    <div class="profile-header-card">
+      <div class="profile-avatar" id="p-avatar">U</div>
+      <div><div class="profile-name" id="p-name">USER</div><div class="profile-email" id="p-email">user@example.com</div><div class="profile-joined">Member since 2026 · ⚡ Eco Warrior</div></div>
+    </div>
+    <div class="ptabs">
+      <button class="ptab active" onclick="switchPTab('orders',this)">Orders</button>
+      <button class="ptab" onclick="switchPTab('addresses',this)">Addresses</button>
+      <button class="ptab" onclick="switchPTab('settings',this)">Settings</button>
+    </div>
+    <div class="tab-pane active" id="pane-orders"><div id="order-list"></div></div>
+    <div class="tab-pane" id="pane-addresses">
+      <div id="address-list"></div>
+      <button class="btn-primary" style="margin-top:1rem" onclick="toast('Address management coming soon!')">+ Add Address</button>
+    </div>
+    <div class="tab-pane" id="pane-settings">
+      <div style="max-width:480px">
+        <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="s-name"></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="s-email" disabled style="opacity:.6"></div>
+        <div class="form-group"><label class="form-label">Mobile</label><input type="tel" class="form-input" id="s-phone"></div>
+        <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+        <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border)"><button class="btn-secondary" onclick="doLogout()">Sign Out</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="page" id="page-checkout">
+  <div class="checkout-wrap">
+    <div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;margin-bottom:2rem">CHECKOUT</h2>
+      <div class="co-sec-title">Delivery Address</div>
+      <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="co-name"></div>
+      <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" class="form-input" id="co-phone" placeholder="+91 98765 43210"></div>
+      <div class="form-group"><label class="form-label">Street Address</label><input type="text" class="form-input" id="co-addr" placeholder="123, Subhash Nagar"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group"><label class="form-label">City</label><input type="text" class="form-input" id="co-city" placeholder="Jaipur"></div>
+        <div class="form-group"><label class="form-label">PIN Code</label><input type="text" class="form-input" id="co-pin" placeholder="302016"></div>
+      </div>
+      <div class="co-sec-title" style="margin-top:2rem">Payment</div>
+      <label class="pay-opt"><input type="radio" name="pay" value="razorpay" checked> 💳 Pay Online (UPI / Card / Wallet) via Razorpay</label>
+      <label class="pay-opt"><input type="radio" name="pay" value="cod"> 💵 Cash on Delivery</label>
+    </div>
+    <div>
+      <div class="order-summary-box">
+        <div class="co-sec-title">Order Summary</div>
+        <div id="co-items"></div>
+        <div id="co-totals"></div>
+        <button class="place-btn" id="place-btn" onclick="initiatePayment()">🔒 Proceed to Payment</button>
+        <div style="text-align:center;color:var(--gray);font-size:.78rem;margin-top:1rem">🔒 Secured by Razorpay · PCI DSS Compliant</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="page" id="page-success">
+  <div class="success-wrap">
+    <span class="success-icon">✅</span>
+    <div class="success-title">ORDER CONFIRMED!</div>
+    <p class="success-sub">Payment received! Your induction cooktop will be delivered in 2–5 business days. A confirmation email has been sent to you.</p>
+    <div class="success-order-box">Order ID: <span id="success-id">#IND-000000</span></div>
+    <div class="success-btns">
+      <button class="btn-primary" onclick="viewOrders()">View Order</button>
+      <button class="btn-secondary" onclick="goPage('page-home')">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+// CONFIG — Change this to your deployed backend URL
+// ─────────────────────────────────────────────────────────────────
+const API = 'http://localhost:5000/api';
+
+// ─────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────
+let cart = [];
+let wishlist = new Set();
+let currentUser = null;
+let authToken = localStorage.getItem('inducta_token') || null;
+let focusProduct = null;
+let allProducts = [];
+let filt = 'all';
+let sortBy = 'default';
+
+// ─────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────
+const gel = id => document.getElementById(id);
+
+function toast(msg, type = 'success') {
+  const el = gel('toast');
+  el.textContent = msg;
+  el.className = type === 'error' ? 'error' : '';
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function rupee(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+function starsHTML(r) { const f = Math.round(r); return '★'.repeat(f) + '☆'.repeat(5 - f); }
+
+function showLoader() { gel('page-loader').classList.add('show'); }
+function hideLoader() { gel('page-loader').classList.remove('show'); }
+
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = gel(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'page-profile') loadProfileData();
+}
+
+function scrollToProducts() {
+  goPage('page-home');
+  setTimeout(() => gel('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// API CALLS
+// ─────────────────────────────────────────────────────────────────
+async function apiCall(endpoint, method = 'GET', body = null, auth = false) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth && authToken) headers['Authorization'] = `Bearer ${authToken}`;
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}${endpoint}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || data.errors?.[0]?.msg || 'Request failed');
+  return data;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MARQUEE
+// ─────────────────────────────────────────────────────────────────
+function initMarquee() {
+  const msgs = ['FREE DELIVERY OVER ₹2,000', '🔥 GAS PRICES UP 40% — SWITCH NOW', '⚡ 50+ INDUCTION MODELS IN STOCK', '💰 NO COST EMI AVAILABLE', '🛡️ 5-YEAR WARRANTY ON PREMIUM MODELS', '🚀 SAME-DAY DELIVERY IN JAIPUR'];
+  const html = msgs.map(m => `<span class="marquee-item">${m} <span class="marquee-dot">·</span></span>`).join('');
+  const el = gel('marquee-inner');
+  if (el) el.innerHTML = html + html;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SVG
+// ─────────────────────────────────────────────────────────────────
+function mkSVG(p, sz = 70) {
+  if (p.type === 'Built-In') {
+    return `<svg viewBox="0 0 200 120" width="${Math.round(sz*1.6)}" height="${sz}" fill="none">
+      <rect x="5" y="10" width="190" height="100" rx="10" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
+      <rect x="15" y="18" width="170" height="84" rx="6" fill="#141414"/>
+      <circle cx="60" cy="50" r="24" stroke="#e85d04" stroke-width="2.5" opacity=".8"/>
+      <circle cx="60" cy="50" r="14" stroke="#f48c42" stroke-width="1.5" opacity=".5"/>
+      <circle cx="60" cy="50" r="6" fill="#e85d04" opacity=".7"/>
+      <circle cx="130" cy="50" r="18" stroke="#e85d04" stroke-width="2" opacity=".7"/>
+      <circle cx="130" cy="50" r="10" stroke="#f48c42" stroke-width="1.5" opacity=".4"/>
+      <circle cx="50" cy="88" r="6" fill="#e85d04" opacity=".8"/>
+      <circle cx="70" cy="88" r="6" fill="#333"/>
+      <rect x="100" y="82" width="70" height="12" rx="3" fill="#1a1a1a" stroke="#333"/>
+      <text x="135" y="92" font-family="monospace" font-size="7" fill="#e85d04" text-anchor="middle">${p.wattage}</text>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 160 160" width="${sz}" height="${sz}" fill="none">
+    <rect x="15" y="35" width="130" height="90" rx="14" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
+    <rect x="24" y="43" width="112" height="74" rx="8" fill="#141414"/>
+    <circle cx="70" cy="78" r="22" stroke="#e85d04" stroke-width="2.5" opacity=".8"/>
+    <circle cx="70" cy="78" r="14" stroke="#f48c42" stroke-width="1.5" opacity=".5"/>
+    <circle cx="70" cy="78" r="7" fill="#e85d04" opacity=".5"/>
+    <circle cx="70" cy="78" r="3" fill="#e85d04" opacity=".9"/>
+    <circle cx="115" cy="78" r="14" stroke="#e85d04" stroke-width="2" opacity=".5"/>
+    <circle cx="115" cy="78" r="8" stroke="#f48c42" stroke-width="1.5" opacity=".4"/>
+    <circle cx="35" cy="118" r="5" fill="#333"/>
+    <circle cx="52" cy="118" r="5" fill="#e85d04"/>
+    <circle cx="69" cy="118" r="5" fill="#333"/>
+    <rect x="88" y="112" width="45" height="12" rx="3" fill="#1a1a1a" stroke="#333"/>
+    <text x="110" y="122" font-family="monospace" font-size="7" fill="#e85d04" text-anchor="middle">${p.wattage}</text>
+  </svg>`;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PRODUCTS — loaded from real backend
+// ─────────────────────────────────────────────────────────────────
+async function loadProducts() {
+  try {
+    const data = await apiCall('/products');
+    allProducts = data.products;
+    renderProducts();
+  } catch (err) {
+    gel('products-grid').innerHTML = `<div style="color:var(--red);padding:2rem">Failed to load products. Is the backend running?<br><small>${err.message}</small></div>`;
+  }
+}
+
+function setFilter(f, el) {
+  filt = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderProducts();
+}
+
+function setSort(v) { sortBy = v; renderProducts(); }
+
+function renderProducts() {
+  let list = [...allProducts];
+  if (filt === 'budget') list = list.filter(p => p.price < 3000);
+  else if (filt === 'mid') list = list.filter(p => p.price >= 3000 && p.price <= 7000);
+  else if (filt === 'premium') list = list.filter(p => p.price > 7000);
+  else if (filt === 'portable') list = list.filter(p => p.type === 'Portable');
+  else if (filt === 'builtin') list = list.filter(p => p.type === 'Built-In');
+  if (sortBy === 'price-low') list.sort((a, b) => a.price - b.price);
+  else if (sortBy === 'price-high') list.sort((a, b) => b.price - a.price);
+  else if (sortBy === 'rating') list.sort((a, b) => b.rating - a.rating);
+
+  const grid = gel('products-grid');
+  if (!list.length) { grid.innerHTML = '<p style="color:var(--gray);padding:2rem">No products in this category yet.</p>'; return; }
+
+  grid.innerHTML = list.map(p => {
+    const disc = Math.round((1 - p.price / p.oldPrice) * 100);
+    const inW = wishlist.has(p.id);
+    return `<div class="product-card" onclick="openProduct('${p.id}')">
+      <div class="product-img">
+        ${mkSVG(p)}
+        ${p.tag ? `<div class="product-badge-tag ${p.tagCls||''}">${p.tag}</div>` : ''}
+        <button class="wishlist-btn ${inW?'wishlisted':''}" onclick="event.stopPropagation();toggleWish('${p.id}',this)">${inW?'♥':'♡'}</button>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.5rem">
+          <span class="stars">${starsHTML(p.rating)}</span>
+          <span style="font-weight:600;font-size:.82rem">${p.rating}</span>
+          <span class="review-count">(${Number(p.reviews).toLocaleString()})</span>
+        </div>
+        <div class="product-specs">
+          <span class="spec-tag">⚡ ${p.wattage}</span>
+          <span class="spec-tag">🍳 ${p.zones}</span>
+          <span class="spec-tag">📦 ${p.type}</span>
+        </div>
+        <div class="product-price-row">
+          <div>
+            <span class="product-price"><span class="cur">₹</span>${(p.price/1000).toFixed(1)}K</span>
+            <span class="product-old-price">₹${Number(p.oldPrice).toLocaleString()}</span>
+            <div style="color:var(--green);font-size:.75rem;font-weight:700;margin-top:.15rem">${disc}% OFF</div>
+          </div>
+          <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.id}')">Add to Cart</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PRODUCT DETAIL
+// ─────────────────────────────────────────────────────────────────
+async function openProduct(id) {
+  let p = allProducts.find(x => x.id === id);
+  if (!p) {
+    try { p = await apiCall(`/products/${id}`); } catch { toast('Product not found', 'error'); return; }
+  }
+  focusProduct = p;
+  const disc = Math.round((1 - p.price / p.oldPrice) * 100);
+  gel('d-crumb').textContent = p.name;
+  gel('d-brand').textContent = p.brand;
+  gel('d-title').textContent = p.name;
+  gel('d-stars').textContent = starsHTML(p.rating);
+  gel('d-rating').textContent = p.rating;
+  gel('d-reviews').textContent = `(${Number(p.reviews).toLocaleString()} reviews)`;
+  gel('d-price').innerHTML = `<span class="cur">₹</span>${Number(p.price).toLocaleString()}`;
+  gel('d-old').textContent = `₹${Number(p.oldPrice).toLocaleString()}`;
+  gel('d-save').textContent = `💰 You save ₹${(p.oldPrice-p.price).toLocaleString()} (${disc}% off)`;
+  gel('d-img').innerHTML = mkSVG(p, 160);
+  gel('d-features').innerHTML = (p.features||[]).map(f => `<div class="feature-item"><span class="feature-icon">✓</span><span>${f}</span></div>`).join('');
+  gel('d-specs').innerHTML = Object.entries(p.specs||{}).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+  const inW = wishlist.has(p.id);
+  const wb = gel('d-wish');
+  wb.textContent = inW ? '♥' : '♡';
+  wb.className = 'detail-wish-btn' + (inW ? ' wishlisted' : '');
+  goPage('page-detail');
+}
+
+function addDetailToCart() { if (focusProduct) addToCart(focusProduct.id); }
+function toggleDetailWish() {
+  if (!focusProduct) return;
+  toggleWish(focusProduct.id, null);
+  const inW = wishlist.has(focusProduct.id);
+  const wb = gel('d-wish');
+  wb.textContent = inW ? '♥' : '♡';
+  wb.className = 'detail-wish-btn' + (inW ? ' wishlisted' : '');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// WISHLIST
+// ─────────────────────────────────────────────────────────────────
+function toggleWish(id, btn) {
+  if (wishlist.has(id)) {
+    wishlist.delete(id);
+    if (btn) { btn.classList.remove('wishlisted'); btn.textContent = '♡'; }
+    toast('Removed from wishlist');
+  } else {
+    wishlist.add(id);
+    if (btn) { btn.classList.add('wishlisted'); btn.textContent = '♥'; }
+    toast('❤️ Added to wishlist!');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// CART
+// ─────────────────────────────────────────────────────────────────
+function addToCart(id) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  const ex = cart.find(x => x.id === id);
+  if (ex) ex.qty++;
+  else cart.push({ ...p, qty: 1 });
+  updateBadge();
+  renderCart();
+  toast(`🛒 ${p.name} added!`);
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+  updateBadge(); renderCart();
+}
+
+function removeItem(id) { cart = cart.filter(x => x.id !== id); updateBadge(); renderCart(); }
+
+function updateBadge() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const b = gel('cart-badge');
+  b.textContent = total;
+  b.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function renderCart() {
+  const wrap = gel('cart-items-wrap');
+  const foot = gel('cart-footer-area');
+  if (!wrap || !foot) return;
+  if (cart.length === 0) {
+    wrap.innerHTML = `<div class="empty-cart"><span class="empty-icon">🛒</span><p>Your cart is empty</p></div>`;
+    foot.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${mkSVG(item, 30)}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-brand">${item.brand}</div>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${rupee(item.price)}</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeItem('${item.id}')">🗑</button>
+    </div>`).join('');
+
+  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const ship = sub >= 2000 ? 0 : 99;
+  foot.innerHTML = `<div class="cart-footer-wrap">
+    <div class="cart-total-row"><span>Subtotal</span><span>${rupee(sub)}</span></div>
+    <div class="cart-total-row"><span>Shipping</span><span>${ship === 0 ? '<span style="color:var(--green)">FREE</span>' : rupee(ship)}</span></div>
+    <div class="cart-grand"><span>Total</span><span>${rupee(sub+ship)}</span></div>
+    <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout →</button>
+    <div style="text-align:center;color:var(--gray);font-size:.78rem;margin-top:.75rem">🔒 Secured by Razorpay</div>
+  </div>`;
+}
+
+function openCart() { renderCart(); gel('cart-drawer').classList.add('open'); gel('drawer-overlay').classList.add('open'); }
+function closeCart() { gel('cart-drawer').classList.remove('open'); gel('drawer-overlay').classList.remove('open'); }
+
+// ─────────────────────────────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────────────────────────────
+function openAuth() { gel('auth-modal').classList.add('open'); }
+function closeAuth() { gel('auth-modal').classList.remove('open'); }
+
+function switchAuthTab(tab) {
+  gel('atab-login').classList.toggle('active', tab === 'login');
+  gel('atab-reg').classList.toggle('active', tab === 'reg');
+  gel('aform-login').style.display = tab === 'login' ? 'block' : 'none';
+  gel('aform-reg').style.display = tab === 'reg' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = gel('f-email').value.trim();
+  const pass = gel('f-pass').value;
+  const errEl = gel('login-error');
+  const btn = gel('login-btn');
+  errEl.classList.remove('show');
+  if (!email || !pass) { errEl.textContent = 'Please fill all fields'; errEl.classList.add('show'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Signing in...';
+  try {
+    const data = await apiCall('/auth/login', 'POST', { email, password: pass });
+    authToken = data.token;
+    localStorage.setItem('inducta_token', authToken);
+    setUser(data.user);
+    closeAuth();
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In to INDUCTA';
+  }
+}
+
+async function doRegister() {
+  const name = gel('r-name').value.trim();
+  const email = gel('r-email').value.trim();
+  const pass = gel('r-pass').value;
+  const phone = gel('r-phone').value.trim();
+  const errEl = gel('reg-error');
+  const btn = gel('reg-btn');
+  errEl.classList.remove('show');
+  if (!name || !email || !pass) { errEl.textContent = 'Please fill all fields'; errEl.classList.add('show'); return; }
+  if (pass.length < 8) { errEl.textContent = 'Password must be 8+ characters'; errEl.classList.add('show'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Creating account...';
+  try {
+    const data = await apiCall('/auth/register', 'POST', { name, email, password: pass, phone });
+    authToken = data.token;
+    localStorage.setItem('inducta_token', authToken);
+    setUser(data.user);
+    closeAuth();
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Create Account';
+  }
+}
+
+function setUser(user) {
+  currentUser = user;
+  gel('btn-signin').style.display = 'none';
+  gel('btn-profile').style.display = 'flex';
+  gel('p-name').textContent = user.name.toUpperCase();
+  gel('p-email').textContent = user.email;
+  gel('p-avatar').textContent = user.name.charAt(0).toUpperCase();
+  gel('s-name').value = user.name;
+  gel('s-email').value = user.email;
+  gel('s-phone').value = user.phone || '';
+  toast(`👋 Welcome, ${user.name.split(' ')[0]}!`);
+}
+
+function doLogout() {
+  currentUser = null;
+  authToken = null;
+  localStorage.removeItem('inducta_token');
+  gel('btn-signin').style.display = 'flex';
+  gel('btn-profile').style.display = 'none';
+  goPage('page-home');
+  toast('👋 Signed out successfully');
+}
+
+function handleProfileNav() {
+  if (currentUser) goPage('page-profile');
+  else openAuth();
+}
+
+async function saveSettings() {
+  if (!currentUser) return;
+  const name = gel('s-name').value.trim();
+  const phone = gel('s-phone').value.trim();
+  try {
+    await apiCall('/auth/me', 'PUT', { name, phone }, true);
+    currentUser.name = name;
+    gel('p-name').textContent = name.toUpperCase();
+    gel('p-avatar').textContent = name.charAt(0).toUpperCase();
+    toast('✅ Settings saved!');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PROFILE TABS & DATA
+// ─────────────────────────────────────────────────────────────────
+function switchPTab(tabId, btn) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const pane = gel('pane-' + tabId);
+  if (pane) pane.classList.add('active');
+}
+
+function viewOrders() {
+  goPage('page-profile');
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector('.ptab');
+  if (btn) btn.classList.add('active');
+  gel('pane-orders')?.classList.add('active');
+}
+
+async function loadProfileData() {
+  if (!currentUser || !authToken) return;
+  // Load orders
+  try {
+    const data = await apiCall('/orders', 'GET', null, true);
+    renderOrders(data.orders);
+  } catch (err) {
+    gel('order-list').innerHTML = `<p style="color:var(--red)">${err.message}</p>`;
+  }
+  // Load addresses
+  try {
+    const user = await apiCall('/auth/me', 'GET', null, true);
+    const addrs = user.addresses || [];
+    gel('address-list').innerHTML = addrs.length
+      ? addrs.map(a => `<div class="addr-card"><h4>${a.isDefault?'🏠 ':''} ${a.label}</h4><p>${a.street}, ${a.city}, ${a.state} ${a.pin}</p></div>`).join('')
+      : '<p style="color:var(--gray)">No addresses saved yet.</p>';
+  } catch {}
+}
+
+function renderOrders(orders) {
+  const el = gel('order-list');
+  if (!orders || orders.length === 0) {
+    el.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--gray)"><div style="font-size:2.5rem;margin-bottom:1rem">📦</div><p>No orders yet.</p><button class="btn-primary" style="margin-top:1rem" onclick="scrollToProducts()">Start Shopping</button></div>`;
+    return;
+  }
+  el.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-header">
+        <div><div class="order-id-label">${o.id}</div><div class="order-date">${o.createdAt?.slice(0,10)}</div></div>
+        <span class="order-status status-${o.status}">${o.status.toUpperCase()}</span>
+      </div>
+      <div class="order-lines">
+        ${(o.items||[]).map(item => `
+          <div class="order-line">
+            <div class="order-thumb">${mkSVG(item,22)}</div>
+            <div class="order-line-details"><div class="order-line-brand">${item.brand}</div><div class="order-line-name">${item.name} × ${item.qty}</div></div>
+            <div style="font-weight:700;font-size:.88rem">${rupee(item.price*item.qty)}</div>
+          </div>`).join('')}
+      </div>
+      <div class="order-total-row"><span>Total Paid</span><strong>${rupee(o.total)}</strong></div>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// CHECKOUT + RAZORPAY
+// ─────────────────────────────────────────────────────────────────
+function goToCheckout() {
+  if (!currentUser) { closeCart(); openAuth(); return; }
+  if (cart.length === 0) { closeCart(); toast('Your cart is empty!', 'error'); return; }
+  closeCart();
+
+  gel('co-items').innerHTML = cart.map(item => `
+    <div class="co-item-row">
+      <div class="co-item-img">${mkSVG(item, 24)}</div>
+      <div style="flex:1"><div style="font-size:.85rem;font-weight:600">${item.name}</div><div style="color:var(--orange);font-size:.75rem">${item.brand} × ${item.qty}</div></div>
+      <div style="font-weight:700">${rupee(item.price * item.qty)}</div>
+    </div>`).join('');
+
+  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const ship = sub >= 2000 ? 0 : 99;
+  const gst = Math.round(sub * 0.18);
+  const total = sub + ship + gst;
+
+  gel('co-totals').innerHTML = `
+    <div class="co-row"><span>Subtotal</span><span>${rupee(sub)}</span></div>
+    <div class="co-row"><span>Shipping</span><span>${ship === 0 ? '<span style="color:var(--green)">FREE</span>' : rupee(ship)}</span></div>
+    <div class="co-row"><span>GST (18%)</span><span>${rupee(gst)}</span></div>
+    <div class="co-row grand"><span>Total</span><span>${rupee(total)}</span></div>`;
+
+  gel('co-name').value = currentUser.name || '';
+  goPage('page-checkout');
+}
+
+async function initiatePayment() {
+  const name = gel('co-name').value.trim();
+  const phone = gel('co-phone').value.trim();
+  const addr = gel('co-addr').value.trim();
+  const city = gel('co-city').value.trim();
+  const pin = gel('co-pin').value.trim();
+  if (!name || !phone || !addr || !city || !pin) { toast('Please fill all delivery details', 'error'); return; }
+
+  const payMethod = document.querySelector('input[name="pay"]:checked').value;
+
+  const btn = gel('place-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+  try {
+    // Step 1: Create order on backend (prices verified server-side)
+    const orderData = await apiCall('/payment/create-order', 'POST', {
+      cartItems: cart.map(i => ({ id: i.id, qty: i.qty })),
+      paymentMethod: payMethod,
+    }, true);
+
+    if (payMethod === 'cod') {
+      // COD: verify with a fake signature skip — mark as pending
+      await apiCall('/payment/verify', 'POST', {
+        razorpay_order_id: orderData.razorpayOrderId,
+        razorpay_payment_id: 'cod_' + Date.now(),
+        razorpay_signature: 'cod',
+        internalOrderId: orderData.internalOrderId,
+      }, true);
+      gel('success-id').textContent = orderData.internalOrderId;
+      cart = [];
+      updateBadge();
+      clearCheckoutForm();
+      goPage('page-success');
+      return;
+    }
+
+    // Step 2: Open Razorpay payment modal
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: 'INDUCTA',
+      description: 'Electric Induction Purchase',
+      order_id: orderData.razorpayOrderId,
+      prefill: {
+        name: currentUser.name,
+        email: currentUser.email,
+        contact: phone,
+      },
+      theme: { color: '#e85d04' },
+      modal: {
+        ondismiss: () => {
+          btn.disabled = false;
+          btn.innerHTML = '🔒 Proceed to Payment';
+          toast('Payment cancelled', 'error');
+        }
+      },
+      handler: async function (response) {
+        // Step 3: Verify payment on backend
+        try {
+          showLoader();
+          await apiCall('/payment/verify', 'POST', {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            internalOrderId: orderData.internalOrderId,
+          }, true);
+          gel('success-id').textContent = orderData.internalOrderId;
+          cart = [];
+          updateBadge();
+          clearCheckoutForm();
+          goPage('page-success');
+        } catch (err) {
+          toast('Payment verification failed: ' + err.message, 'error');
+        } finally {
+          hideLoader();
+        }
+      },
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+      toast('Payment failed: ' + response.error.description, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '🔒 Proceed to Payment';
+    });
+    rzp.open();
+
+  } catch (err) {
+    toast(err.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = '🔒 Proceed to Payment';
+  }
+}
+
+function clearCheckoutForm() {
+  ['co-name','co-phone','co-addr','co-city','co-pin'].forEach(id => { const e = gel(id); if (e) e.value = ''; });
+  const btn = gel('place-btn');
+  if (btn) { btn.disabled = false; btn.innerHTML = '🔒 Proceed to Payment'; }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────
+async function init() {
+  initMarquee();
+  renderCart();
+
+  // Restore session if token exists
+  if (authToken) {
+    try {
+      const user = await apiCall('/auth/me', 'GET', null, true);
+      setUser(user);
+      toast(`👋 Welcome back, ${user.name.split(' ')[0]}!`);
+    } catch {
+      // Token expired or invalid — clear it
+      authToken = null;
+      localStorage.removeItem('inducta_token');
+    }
+  }
+
+  await loadProducts();
+}
+
+init();
+</script>
+</body>
+</html>
