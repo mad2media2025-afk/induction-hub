@@ -13,6 +13,9 @@ const { initFirebase } = require('./config/firebase');
 initFirebase();
 const app = express();
 
+// Trust proxy for Render/Vercel (fixes rate-limit issues)
+app.set('trust proxy', 1);
+
 app.get('/api/health', (req, res) => res.send('OK'));
 
 // ── SECURITY MIDDLEWARE ───────────────────────────────────────────
