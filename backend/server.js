@@ -13,13 +13,17 @@ const { initFirebase } = require('./config/firebase');
 initFirebase();
 const app = express();
 
+app.get('/api/health', (req, res) => res.send('OK'));
+
 // ── SECURITY MIDDLEWARE ───────────────────────────────────────────
-app.use(helmet()); // sets secure HTTP headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for development to avoid blocking local fetches
+})); 
 
 // Rate limiting — prevent brute force / abuse
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,                  // 100 requests per window per IP
+  max: 1000,                 // Increased for development
   message: { error: 'Too many requests. Please try again later.' },
 });
 app.use('/api/', limiter);
@@ -27,7 +31,7 @@ app.use('/api/', limiter);
 // Stricter limit on auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 50,
   message: { error: 'Too many login attempts. Please wait 15 minutes.' },
 });
 app.use('/api/auth/login', authLimiter);
@@ -35,7 +39,7 @@ app.use('/api/auth/register', authLimiter);
 
 // ── CORS ──────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: true, // Allow all origins for easier development
   credentials: true,
 }));
 

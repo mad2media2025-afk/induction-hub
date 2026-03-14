@@ -1,9 +1,9 @@
 // middleware/auth.js
-// Protects routes — verifies JWT token sent in Authorization header
+// Protects routes — verifies Firebase ID token sent in Authorization header
 
-const jwt = require('jsonwebtoken');
+const { admin } = require('../config/firebase');
 
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
 
@@ -12,13 +12,18 @@ function authMiddleware(req, res, next) {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await admin.auth().verifyIdToken(token);
 
     // Attach user info to request for use in route handlers
-    req.user = decoded;
+    req.user = {
+      uid: decoded.uid,
+      email: decoded.email,
+      name: decoded.name || decoded.email,
+    };
     next();
   } catch (err) {
-    if (err.name === 'TokenExpiredError') {
+    console.error('Auth middleware error:', err.message);
+    if (err.code === 'auth/id-token-expired') {
       return res.status(401).json({ error: 'Session expired. Please sign in again.' });
     }
     return res.status(401).json({ error: 'Invalid token.' });
