@@ -15,11 +15,14 @@ const { sendOrderConfirmationEmail } = require('../utils/email');
 // Called when customer clicks "Place Order"
 // Returns a Razorpay order_id that the frontend uses to open the payment modal
 router.post('/create-order', authMiddleware, async (req, res) => {
-  const { cartItems, addressId, paymentMethod } = req.body;
+  const { cartItems, addressId, paymentMethod, discountPercentage = 0, couponCode = null } = req.body;
 
   if (!cartItems || cartItems.length === 0) {
     return res.status(400).json({ error: 'Cart is empty.' });
   }
+
+  // Validate discount percentage (prevent abuse frontend values)
+  const safeDiscount = (discountPercentage === 10 || discountPercentage === 15) ? discountPercentage : 0;
 
   const db = getDB();
 
@@ -40,7 +43,8 @@ router.post('/create-order', authMiddleware, async (req, res) => {
 
     const shipping = subtotal >= 2000 ? 0 : 99;
     const gst = Math.round(subtotal * 0.18);
-    const total = subtotal + shipping + gst;
+    const discountAmt = safeDiscount > 0 ? Math.round((subtotal + gst) * safeDiscount / 100) : 0;
+    const total = subtotal + shipping + gst - discountAmt;
 
     // Razorpay amount is in paise (1 INR = 100 paise)
     const razorpayOrder = await razorpay.orders.create({
@@ -65,6 +69,8 @@ router.post('/create-order', authMiddleware, async (req, res) => {
       subtotal,
       shipping,
       gst,
+      discountAmt,
+      couponCode,
       total,
       addressId: addressId || null,
       paymentMethod: paymentMethod || 'razorpay',

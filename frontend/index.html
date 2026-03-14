@@ -3143,6 +3143,8 @@
             cartItems,
             addressId: null,
             paymentMethod: 'razorpay',
+            discountPercentage: appliedDiscount || 0,
+            couponCode: appliedCoupon || null
           }),
         });
         rzpOrderData = await res.json();
