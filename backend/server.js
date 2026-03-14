@@ -19,7 +19,12 @@ app.set('trust proxy', 1);
 // 2. CORS - MUST BE BEFORE OTHER MIDDLEWARE
 // Allow both local development and the new live Vercel site
 app.use(cors({
-  origin: ['https://induction-hub.vercel.app', 'http://localhost:3000'],
+  origin: [
+    'https://induction-hub.vercel.app',
+    'https://www.inductionshub.shop',
+    'https://inductionshub.shop',
+    'http://localhost:3000'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
