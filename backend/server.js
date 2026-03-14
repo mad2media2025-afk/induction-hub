@@ -13,8 +13,22 @@ const { initFirebase } = require('./config/firebase');
 initFirebase();
 const app = express();
 
-// Trust proxy for Render/Vercel (fixes rate-limit issues)
+// 1. Trust proxy for Render/Vercel
 app.set('trust proxy', 1);
+
+// 2. CORS - MUST BE BEFORE OTHER MIDDLEWARE
+// Allow both local development and the new live Vercel site
+app.use(cors({
+  origin: ['https://induction-hub.vercel.app', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// 3. Welcome Route (Fixes the "Route not found" error when visiting root)
+app.get('/', (req, res) => {
+  res.json({ message: 'INDUCTA API is live and healthy.', documentation: '/api/health' });
+});
 
 app.get('/api/health', (req, res) => res.send('OK'));
 
@@ -40,11 +54,7 @@ const authLimiter = rateLimit({
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
-// ── CORS ──────────────────────────────────────────────────────────
-app.use(cors({
-  origin: true, // Allow all origins for easier development
-  credentials: true,
-}));
+// CORS moved to top for reliability
 
 // ── BODY PARSING ──────────────────────────────────────────────────
 // Note: /api/payment/webhook needs raw body — must come BEFORE express.json()
