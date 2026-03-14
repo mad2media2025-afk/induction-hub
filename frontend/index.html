@@ -3124,8 +3124,9 @@
       const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
       const ship = sub >= 2000 ? 0 : 99;
       const gst = Math.round(sub * 0.18);
-      const discountAmt = appliedDiscount > 0 ? Math.round((sub + gst) * appliedDiscount / 100) : 0;
-      const total = sub + ship + gst - discountAmt;
+      const couponDiscount = appliedDiscount > 0 ? Math.round((sub + gst) * appliedDiscount / 100) : 0;
+      const checkoutDiscount = Math.round((sub + gst) * 0.10);
+      const total = sub + ship + gst - couponDiscount - checkoutDiscount;
 
       // Build cart items to send
       const cartItems = cart.map(i => ({ id: i.id, qty: i.qty }));

@@ -43,7 +43,9 @@ router.post('/create-order', authMiddleware, async (req, res) => {
 
     const shipping = subtotal >= 2000 ? 0 : 99;
     const gst = Math.round(subtotal * 0.18);
-    const discountAmt = safeDiscount > 0 ? Math.round((subtotal + gst) * safeDiscount / 100) : 0;
+    const couponDiscount = safeDiscount > 0 ? Math.round((subtotal + gst) * safeDiscount / 100) : 0;
+    const checkoutDiscount = Math.round((subtotal + gst) * 0.10);
+    const discountAmt = couponDiscount + checkoutDiscount;
     const total = subtotal + shipping + gst - discountAmt;
 
     // Razorpay amount is in paise (1 INR = 100 paise)
