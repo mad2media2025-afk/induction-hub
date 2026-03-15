@@ -213,243 +213,7 @@
       display: block;
     }
 
-    #hero-section {
-      min-height: 100vh;
-      padding-top: 64px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(232, 93, 4, .18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232, 93, 4, .08) 0%, transparent 60%);
-    }
-
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(245, 242, 238, .03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245, 242, 238, .03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      padding: 4rem 2.5rem 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      gap: 4rem;
-    }
-
-    .hero-text {
-      flex: 1;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      background: rgba(232, 93, 4, .15);
-      border: 1px solid rgba(232, 93, 4, .3);
-      color: var(--orange-light);
-      padding: .35rem 1rem;
-      border-radius: 100px;
-      font-size: .8rem;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3.5rem, 7vw, 7rem);
-      line-height: .95;
-      letter-spacing: .03em;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-h1 em {
-      font-style: normal;
-      color: var(--orange);
-      display: block;
-    }
-
-    .hero-sub {
-      color: var(--gray-light);
-      font-size: 1.1rem;
-      line-height: 1.7;
-      max-width: 480px;
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-    }
-
-    .hero-sub strong {
-      color: var(--white);
-      font-weight: 500;
-    }
-
-    .hero-ctas {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 3rem;
-    }
-
-    .btn-hero {
-      background: var(--orange);
-      color: #fff;
-      border: none;
-      padding: 1rem 2.2rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all .25s;
-      letter-spacing: .04em;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-hero:hover {
-      background: var(--orange-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(232, 93, 4, .4);
-    }
-
-    .btn-hero-outline {
-      background: transparent;
-      color: var(--white);
-      border: 1.5px solid rgba(245, 242, 238, .25);
-      padding: 1rem 2.2rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all .25s;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-hero-outline:hover {
-      border-color: var(--orange);
-      color: var(--orange);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.2rem;
-      color: var(--white);
-      line-height: 1;
-      letter-spacing: .05em;
-    }
-
-    .stat-num span {
-      color: var(--orange);
-    }
-
-    .stat-label {
-      color: var(--gray);
-      font-size: .78rem;
-      font-weight: 500;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-top: .2rem;
-    }
-
-    .hero-visual {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .hero-card-3d {
-      width: 420px;
-      height: 420px;
-      background: linear-gradient(135deg, var(--s2) 0%, var(--s1) 100%);
-      border-radius: 32px;
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: visible;
-      box-shadow: 0 40px 100px rgba(0, 0, 0, .6), 0 0 60px rgba(232, 93, 4, .15);
-    }
-
-    .hero-card-3d::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      background: linear-gradient(135deg, rgba(232, 93, 4, .3), transparent 50%);
-      border-radius: 32px;
-      pointer-events: none;
-    }
-
-    .hero-product-label {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.1rem;
-      color: var(--gray-light);
-      margin-top: .5rem;
-      font-style: italic;
-    }
-
-    .floating-tag {
-      position: absolute;
-      background: var(--s3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .6rem 1rem;
-      font-size: .8rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
-      animation: floatAnim 3s ease-in-out infinite;
-      white-space: nowrap;
-    }
-
-    .floating-tag.t1 {
-      top: 20px;
-      right: -40px;
-      animation-delay: 0s;
-    }
-
-    .floating-tag.t2 {
-      bottom: 40px;
-      left: -50px;
-      animation-delay: 1.5s;
-    }
-
-    .floating-tag .tag-val {
-      font-weight: 700;
-      color: var(--orange);
-    }
-
-    @keyframes floatAnim {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-8px);
-      }
-    }
+    /* Hero styles removed */
 
     .marquee-bar {
       background: var(--orange);
@@ -2192,100 +1956,14 @@
 
   <!-- PAGE: HOME -->
   <div class="page active" id="page-home">
-    <section id="hero-section">
-      <div class="hero-bg"></div>
-      <div class="hero-grid"></div>
-      <div class="hero-content">
-        <div class="hero-text">
-          <div class="hero-badge">Gas Prices Rising — Switch Smart</div>
-          <h1 class="hero-h1">Cook Smarter.<em>Save More.</em>Live Better.</h1>
-          <p class="hero-sub">With <strong>gas cylinder prices surging 40%</strong> due to global conflict, electric
-            induction is the intelligent upgrade. Save ₹8,000+ annually while cooking faster and safer.</p>
-          <div class="hero-ctas">
-            <button class="btn-hero" onclick="scrollToProducts()">Shop Inductions</button>
-            <button class="btn-hero-outline" onclick="scrollToProducts()">View Deals</button>
-          </div>
-          <div class="hero-stats">
-            <div>
-              <div class="stat-num">40<span>%</span></div>
-              <div class="stat-label">Gas Price Rise</div>
-            </div>
-            <div>
-              <div class="stat-num">₹8<span>K+</span></div>
-              <div class="stat-label">Annual Savings</div>
-            </div>
-            <div>
-              <div class="stat-num">50<span>+</span></div>
-              <div class="stat-label">Models Available</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="hero-card-3d">
-            <svg viewBox="0 0 200 200" width="260" height="260" fill="none">
-              <rect x="20" y="50" width="160" height="100" rx="16" fill="#1e1e1e" stroke="#333" stroke-width="1.5" />
-              <rect x="30" y="60" width="140" height="80" rx="10" fill="#141414" />
-              <circle cx="80" cy="95" r="26" stroke="#e85d04" stroke-width="2.5" opacity=".7" />
-              <circle cx="80" cy="95" r="18" stroke="#f48c42" stroke-width="1.5" opacity=".5" />
-              <circle cx="80" cy="95" r="10" fill="#e85d04" opacity=".3" />
-              <circle cx="80" cy="95" r="5" fill="#e85d04" opacity=".6" />
-              <circle cx="135" cy="95" r="18" stroke="#e85d04" stroke-width="2" opacity=".5" />
-              <circle cx="135" cy="95" r="11" stroke="#f48c42" stroke-width="1.5" opacity=".4" />
-              <circle cx="135" cy="95" r="5" fill="#e85d04" opacity=".4" />
-              <circle cx="50" cy="143" r="5" fill="#333" />
-              <circle cx="66" cy="143" r="5" fill="#e85d04" />
-              <circle cx="82" cy="143" r="5" fill="#333" />
-              <rect x="100" y="135" width="60" height="16" rx="4" fill="#1e1e1e" stroke="#333" />
-              <text x="130" y="147" font-family="monospace" font-size="9" fill="#e85d04"
-                text-anchor="middle">2200W</text>
-            </svg>
-            <div class="hero-product-label">Premium Induction Cooktop</div>
-            <div class="floating-tag t1">
-              <div>Energy Efficient</div>
-              <div class="tag-val">90% Efficient</div>
-            </div>
-            <div class="floating-tag t2">
-              <div>Save vs Gas</div>
-              <div class="tag-val">₹8K/yr Savings</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
 
     <div class="marquee-bar">
       <div class="marquee-inner" id="marquee-inner"></div>
     </div>
 
-    <div class="section">
-      <div class="section-header">
-        <div class="section-tag">Why Switch?</div>
-        <div class="section-title">GAS IS EXPENSIVE.<br>INDUCTION IS SMART.</div>
-        <div class="section-sub">The economics are clear — and getting clearer every month.</div>
-      </div>
-      <div class="why-grid">
-        <div class="why-card"><span class="why-icon" style="font-weight:700;color:var(--orange)">1</span>
-          <div class="why-title">Save ₹8,000+ Annually</div>
-          <div class="why-desc">With gas prices up 40% due to global conflicts, induction cooking cuts your fuel bill
-            dramatically. Pay back the cooktop cost in under 8 months.</div>
-        </div>
-        <div class="why-card"><span class="why-icon" style="font-weight:700;color:var(--orange)">2</span>
-          <div class="why-title">90% Energy Efficiency</div>
-          <div class="why-desc">Gas cooktops waste 60% of heat. Induction transfers 90% directly into your cookware —
-            faster boil times and precise control.</div>
-        </div>
-        <div class="why-card"><span class="why-icon" style="font-weight:700;color:var(--orange)">3</span>
-          <div class="why-title">Safer for Every Home</div>
-          <div class="why-desc">No open flames. No gas leaks. Automatic shut-off. Child lock features. The safest way to
-            cook, especially with kids around.</div>
-        </div>
-        <div class="why-card"><span class="why-icon" style="font-weight:700;color:var(--orange)">4</span>
-          <div class="why-title">Eco-Friendly Cooking</div>
-          <div class="why-desc">Zero combustion emissions. Reduce your carbon footprint while saving money. The
-            planet-smart choice for modern Indian homes.</div>
-        </div>
-      </div>
-    </div>
+
+
 
     <div class="section" id="products-section">
       <div class="section-header">
@@ -2754,6 +2432,7 @@
             <span class="product-price">${rupee(p.price)}</span>
             <span class="product-old-price">${rupee(p.oldPrice)}</span>
             <div style="color:var(--green);font-size:.75rem;font-weight:700;margin-top:.15rem">${disc}% OFF</div>
+            <div style="color:var(--green);font-size:.72rem;font-weight:600;margin-top:.2rem">✅ Free Delivery</div>
           </div>
           <button class="add-btn" onclick="event.stopPropagation();addToCart('${pid}')">Add to Cart</button>
         </div>
@@ -3386,6 +3065,85 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
   <script defer src="/_vercel/speed-insights/script.js"></script>
+
+  <!-- ── PRICE DROP POPUP ─────────────────────────────────────────── -->
+  <div id="price-popup" style="
+    display:none;
+    position:fixed;inset:0;z-index:10000;
+    background:rgba(0,0,0,.75);
+    align-items:center;justify-content:center;
+    backdrop-filter:blur(4px);
+  " onclick="closePricePopup(event)">
+    <div style="
+      background:linear-gradient(135deg,#1a1a1a 0%,#222 100%);
+      border:1px solid rgba(232,93,4,.4);
+      border-radius:20px;
+      padding:2.5rem 2rem;
+      max-width:420px;width:90%;
+      position:relative;
+      box-shadow:0 40px 80px rgba(0,0,0,.7),0 0 60px rgba(232,93,4,.15);
+      text-align:center;
+      animation:popupIn .35s cubic-bezier(.34,1.56,.64,1);
+    ">
+      <button onclick="closePricePopupDirect()" style="
+        position:absolute;top:1rem;right:1rem;
+        background:rgba(255,255,255,.08);border:none;
+        color:#fff;width:30px;height:30px;border-radius:50%;
+        cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;
+      ">✕</button>
+      <div style="font-size:2.5rem;margin-bottom:.75rem;">🔥</div>
+      <div style="
+        font-family:'Bebas Neue',sans-serif;
+        font-size:1.8rem;letter-spacing:.06em;
+        color:#f5f2ee;margin-bottom:.5rem;line-height:1.1;
+      ">PRICES JUST DROPPED!</div>
+      <div style="
+        color:#e85d04;font-weight:700;font-size:.85rem;
+        letter-spacing:.06em;text-transform:uppercase;margin-bottom:1rem;
+      ">Limited Time · Market Adjustment</div>
+      <p style="color:#c9c4bc;font-size:.95rem;line-height:1.6;margin-bottom:1.5rem;">
+        Prices reduced by <strong style="color:#f5f2ee;">15–18%</strong> across our entire range due to market adjustment.<br>
+        <strong style="color:#e85d04;">Limited stock available.</strong> Buy now before prices increase again.
+      </p>
+      <div style="
+        background:rgba(232,93,4,.1);border:1px solid rgba(232,93,4,.25);
+        border-radius:10px;padding:.75rem 1rem;margin-bottom:1.5rem;
+        font-size:.82rem;color:#f48c42;font-weight:600;
+      ">🏷️ Use code <strong>HUB10</strong> for extra 10% off</div>
+      <button onclick="closePricePopupDirect()" style="
+        background:#e85d04;color:#fff;border:none;
+        padding:.9rem 2.5rem;border-radius:10px;
+        font-weight:700;font-size:1rem;cursor:pointer;
+        font-family:'DM Sans',sans-serif;letter-spacing:.04em;
+        transition:background .2s;width:100%;
+      " onmouseover="this.style.background='#f48c42'" onmouseout="this.style.background='#e85d04'">
+        Shop Now — See All Deals
+      </button>
+    </div>
+  </div>
+  <style>
+    @keyframes popupIn {
+      from { transform:scale(.8);opacity:0; }
+      to   { transform:scale(1);opacity:1; }
+    }
+  </style>
+  <script>
+    function closePricePopup(e) {
+      if (e.target === document.getElementById('price-popup')) closePricePopupDirect();
+    }
+    function closePricePopupDirect() {
+      document.getElementById('price-popup').style.display = 'none';
+      sessionStorage.setItem('popup_shown_v1', '1');
+    }
+    // Show once per session only
+    if (!sessionStorage.getItem('popup_shown_v1')) {
+      setTimeout(function() {
+        var p = document.getElementById('price-popup');
+        if (p) p.style.display = 'flex';
+      }, 1500);
+    }
+  </script>
+
 </body>
 
 </html>
