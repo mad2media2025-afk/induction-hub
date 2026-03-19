@@ -38,6 +38,66 @@
       --border: rgba(245, 242, 238, .08);
     }
 
+    /* Live Order Popup Styles */
+    #live-order-popup {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 9998;
+      background: #fff;
+      color: #333;
+      padding: .85rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      transform: translateX(-120%);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 320px;
+      border: 1px solid rgba(232, 93, 4, 0.2);
+    }
+    #live-order-popup.show {
+      transform: translateX(0);
+    }
+    .order-icon-circle {
+      width: 40px;
+      height: 40px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .order-details {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .order-details strong {
+      color: var(--orange);
+    }
+    .sold-counter {
+      color: var(--orange-light);
+      font-size: .8rem;
+      font-weight: 700;
+      margin-top: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .stock-text {
+      color: var(--red);
+      font-size: .78rem;
+      font-weight: 600;
+      margin-top: .2rem;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -2446,6 +2506,17 @@
           </div>
           <button class="add-btn" onclick="event.stopPropagation();addToCart('${pid}')">Add to Cart</button>
         </div>
+        <div class="sold-counter">
+          <span>🔥</span> 
+          ${Math.random() > 0.5 ? `${Math.floor(Math.random() * 200) + 100}+ sold this month` : 
+            (Math.random() > 0.5 ? `${Math.floor(Math.random() * 400) + 200}+ customers bought` : 
+            `${Math.floor(Math.random() * 60) + 30} orders today`)}
+        </div>
+        <div class="stock-text">
+          <span>⚠️</span>
+          ${Math.random() > 0.6 ? `Only ${Math.floor(Math.random() * 10) + 3} left in stock` : 
+            (Math.random() > 0.5 ? 'Limited stock available' : `${Math.floor(Math.random() * 6) + 3} pieces left`)}
+        </div>
       </div>
     </div>`;
       }).join('');
@@ -3152,6 +3223,48 @@
         if (p) p.style.display = 'flex';
       }, 1500);
     }
+  </script>
+
+  <!-- Live Order Popup Structure -->
+  <div id="live-order-popup">
+    <div class="order-icon-circle">🛒</div>
+    <div class="order-details" id="order-details-text">
+      Someone from <strong>Delhi</strong> just bought this.
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const cities = ["Delhi", "Mumbai", "Jaipur", "Ahmedabad", "Surat", "Pune", "Lucknow", "Indore"];
+      const messages = [
+        "Someone from <strong>{city}</strong> just bought this",
+        "Order placed from <strong>{city}</strong>",
+        "Customer from <strong>{city}</strong> purchased",
+        "<strong>{num}</strong> people bought this today in <strong>{city}</strong>"
+      ];
+      
+      const popup = document.getElementById('live-order-popup');
+      const detail = document.getElementById('order-details-text');
+      
+      function showOrder() {
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        let msg = messages[Math.floor(Math.random() * messages.length)];
+        msg = msg.replace('{city}', city).replace('{num}', Math.floor(Math.random() * 5) + 2);
+        
+        detail.innerHTML = msg;
+        popup.classList.add('show');
+        
+        setTimeout(() => {
+          popup.classList.remove('show');
+        }, 5000);
+        
+        const nextTime = (Math.floor(Math.random() * 11) + 10) * 1000;
+        setTimeout(showOrder, nextTime);
+      }
+      
+      // Start initial after 8s
+      setTimeout(showOrder, 8000);
+    })();
   </script>
 
 </body>
