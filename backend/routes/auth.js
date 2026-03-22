@@ -10,12 +10,16 @@ const { getDB, admin } = require('../config/firebase');
 const authMiddleware = require('../middleware/auth');
 
 // ── GOOGLE SIGN-IN ───────────────────────────────────────────────
-router.post('/google', async (req, res) => {
+router.post('/google', [
+  body('idToken').notEmpty().withMessage('ID token is required.')
+], async (req, res) => {
   try {
-    const { idToken } = req.body;
-    if (!idToken) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({ error: 'ID token is required.' });
     }
+
+    const { idToken } = req.body;
 
     // Verify the Firebase ID token
     const decoded = await admin.auth().verifyIdToken(idToken);

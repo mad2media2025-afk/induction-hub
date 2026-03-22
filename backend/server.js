@@ -23,7 +23,8 @@ app.use(cors({
     'https://induction-hub.vercel.app',
     'https://www.inductionshub.shop',
     'https://inductionshub.shop',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://induction-hub.onrender.com'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -40,6 +41,8 @@ app.get('/api/health', (req, res) => res.send('OK'));
 // ── SECURITY MIDDLEWARE ───────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: false, // Disable CSP for development to avoid blocking local fetches
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  xPoweredBy: false
 })); 
 
 // Rate limiting — prevent brute force / abuse

@@ -10,16 +10,22 @@ const razorpay = require('../config/razorpay');
 const { getDB } = require('../config/firebase');
 const authMiddleware = require('../middleware/auth');
 const { sendOrderConfirmationEmail } = require('../utils/email');
+const { body, validationResult } = require('express-validator');
 
 // ── CREATE RAZORPAY ORDER ─────────────────────────────────────────
 // Called when customer clicks "Place Order"
 // Returns a Razorpay order_id that the frontend uses to open the payment modal
-router.post('/create-order', authMiddleware, async (req, res) => {
-  const { cartItems, addressId, paymentMethod, discountPercentage = 0, couponCode = null } = req.body;
-
-  if (!cartItems || cartItems.length === 0) {
-    return res.status(400).json({ error: 'Cart is empty.' });
+router.post('/create-order', authMiddleware, [
+  body('cartItems').isArray({ min: 1 }).withMessage('Cart is empty.'),
+  body('discountPercentage').optional().isNumeric(),
+  body('couponCode').optional().isString()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
   }
+
+  const { cartItems, addressId, paymentMethod, discountPercentage = 0, couponCode = null } = req.body;
 
   // Validate discount percentage (prevent abuse frontend values)
   const safeDiscount = (discountPercentage === 10 || discountPercentage === 15) ? discountPercentage : 0;
@@ -97,12 +103,18 @@ router.post('/create-order', authMiddleware, async (req, res) => {
 // ── VERIFY PAYMENT ────────────────────────────────────────────────
 // Called after Razorpay payment modal closes successfully
 // Verifies HMAC signature to confirm payment is genuine (not tampered)
-router.post('/verify', authMiddleware, async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, internalOrderId } = req.body;
-
-  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-    return res.status(400).json({ error: 'Missing payment verification fields.' });
+router.post('/verify', authMiddleware, [
+  body('razorpay_order_id').notEmpty().withMessage('Missing payment verification fields.'),
+  body('razorpay_payment_id').notEmpty().withMessage('Missing payment verification fields.'),
+  body('razorpay_signature').notEmpty().withMessage('Missing payment verification fields.'),
+  body('internalOrderId').notEmpty().withMessage('Missing internal order ID.')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
   }
+
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, internalOrderId } = req.body;
 
   // Verify HMAC-SHA256 signature
   const expectedSignature = crypto

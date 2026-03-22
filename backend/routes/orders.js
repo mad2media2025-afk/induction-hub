@@ -8,15 +8,22 @@ const router = express.Router();
 const { getDB } = require('../config/firebase');
 const authMiddleware = require('../middleware/auth');
 const { sendOrderConfirmationEmail } = require('../utils/email');
+const { body, validationResult } = require('express-validator');
 
 // ── CREATE ORDER ──────────────────────────────────────────────────
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, [
+  body('items').isArray({ min: 1 }).withMessage('Order must contain at least one item.'),
+  body('total').isNumeric().withMessage('Total must be a valid number.'),
+  body('shipping').optional().isObject(),
+  body('delivery').optional().isObject()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
   const db = getDB();
   const { items, total, shipping, delivery } = req.body;
-
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ error: 'Order must contain at least one item.' });
-  }
 
   try {
     const orderId = '#IND-' + Math.random().toString(36).slice(2, 8).toUpperCase();
