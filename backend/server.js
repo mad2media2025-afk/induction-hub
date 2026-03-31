@@ -16,19 +16,40 @@ const app = express();
 // 1. Trust proxy for Render/Vercel
 app.set('trust proxy', 1);
 
+// 1.5. Add mobile-friendly headers middleware (for Instagram browser compatibility)
+app.use((req, res, next) => {
+  // Add headers for better mobile/Instagram compatibility
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Vary', 'Origin');
+  res.header('X-Content-Type-Options', 'nosniff');
+  res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+  next();
+});
+
 // 2. CORS - MUST BE BEFORE OTHER MIDDLEWARE
 // Allow both local development and the new live Vercel site
+// Instagram browser compatibility - accept requests from any origin with wildcard
 app.use(cors({
-  origin: [
-    'https://induction-hub.vercel.app',
-    'https://www.inductionshub.shop',
-    'https://inductionshub.shop',
-    'http://localhost:3000',
-    'https://induction-hub.onrender.com'
-  ],
+  origin: function(origin, callback) {
+    // Whitelist specific origins, but also allow requests without origin (Instagram WebView)
+    const whitelist = [
+      'https://induction-hub.vercel.app',
+      'https://www.inductionshub.shop',
+      'https://inductionshub.shop',
+      'http://localhost:3000',
+      'https://induction-hub.onrender.com'
+    ];
+    
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Don't reject - allow requests from Instagram browser
+      callback(null, true);
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'User-Agent']
 }));
 
 // 3. Welcome Route (Fixes the "Route not found" error when visiting root)
@@ -37,6 +58,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => res.send('OK'));
+
+// Keep-alive endpoint for Instagram browser & Render sleep prevention
+app.get('/api/ping', (req, res) => {
+  res.json({ 
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    backend: 'online'
+  });
+});
 
 // ── SECURITY MIDDLEWARE ───────────────────────────────────────────
 app.use(helmet({

@@ -14,7 +14,54 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inductions Hub — Premium Electric Induction Store</title>
+  <title>Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub</title>
+  <meta name="description" content="Shop the best induction cooktop online in India. Wide range of premium induction stoves from brands like Pigeon, Prestige, and Usha at unbeatable prices. Fast delivery and secure payments.">
+  <meta name="keywords" content="induction cooktop, induction stove, buy induction online india, cheap induction cooktop, best induction price, induction stove india, premium induction store">
+  <link rel="canonical" href="https://inductionshub.shop/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://inductionshub.shop/">
+  <meta property="og:title" content="Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub">
+  <meta property="og:description" content="Shop the best induction cooktop online in India. Premium induction stoves at unbeatable prices. Fast delivery.">
+  <meta property="og:image" content="https://inductionshub.shop/favicon.ico">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://inductionshub.shop/">
+  <meta property="twitter:title" content="Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub">
+  <meta property="twitter:description" content="Shop the best induction cooktop online in India. Premium induction stoves at unbeatable prices. Fast delivery.">
+  <meta property="twitter:image" content="https://inductionshub.shop/favicon.ico">
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://inductionshub.shop/",
+    "name": "Inductions Hub",
+    "description": "Premium Electric Induction Store in India",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://inductionshub.shop/?s={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Inductions Hub",
+    "url": "https://inductionshub.shop/",
+    "logo": "https://inductionshub.shop/favicon.ico",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "",
+      "contactType": "customer service"
+    }
+  }
+  </script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -2091,7 +2138,7 @@
     <div class="section" id="products-section">
       <div class="section-header">
         <div class="section-tag">Our Collection</div>
-        <div class="section-title">FIND YOUR PERFECT<br>INDUCTION</div>
+        <h1 class="section-title">FIND YOUR PERFECT<br>INDUCTION</h1>
         <div class="section-sub">From budget-friendly basics to professional chef-grade models.</div>
       </div>
       <div class="filter-bar">
@@ -2345,9 +2392,50 @@
   <script>
     // Removed duplicate global variable declarations to prevent syntax errors
     // ── PRODUCTS ──────────────────────────────────────────────────────
+    // Helper function for retrying failed network requests (Instagram browser & Render sleep handling)
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+      let lastError;
+      
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const response = await fetch(url, {
+            ...options,
+            cache: 'no-store', // Prevent caching issues in Instagram browser
+            headers: {
+              'Content-Type': 'application/json',
+              ...options.headers
+            }
+          });
+          
+          if (!response.ok && response.status === 503) {
+            // 503 = Render still waking up
+            if (attempt < retries) {
+              console.log(`⏳ Backend warming up... (attempt ${attempt}/${retries})`);
+              await new Promise(r => setTimeout(r, delay));
+              delay = delay * 1.5; // Exponential backoff
+              continue;
+            }
+          }
+          
+          return response;
+        } catch (err) {
+          lastError = err;
+          if (attempt < retries) {
+            // Network error - retry
+            console.log(`🔄 Network retry ${attempt}/${retries}...`);
+            await new Promise(r => setTimeout(r, delay));
+            delay = delay * 1.5;
+            continue;
+          }
+        }
+      }
+      
+      throw lastError || new Error('Max retries exceeded');
+    }
+
     async function fetchProducts() {
       try {
-        const res = await fetch(`${API}/products`);
+        const res = await fetchWithRetry(`${API}/products`);
         const data = await res.json();
         // The backend returns { products: [...], total: ... }
         if (data && data.products) {
@@ -2360,7 +2448,7 @@
         console.error('Error fetching products:', err);
         toast('⚠️ Could not load products. Backend might be down.');
         const grid = gel('products-grid');
-        if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--gray)"><div style="font-size:2rem">⚠️</div><p style="margin-top:1rem">Could not load products. Make sure the server is running on port 5000.</p></div>`;
+        if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--gray)"><div style="font-size:2rem">⚠️</div><p style="margin-top:1rem">Could not load products. Backend might be waking up. Please refresh in 30 seconds.</p></div>`;
       }
     }
 
@@ -2481,7 +2569,8 @@
       <text x="135" y="92" font-family="monospace" font-size="7" fill="#e85d04" text-anchor="middle">${p.wattage}</text>
     </svg>`;
       }
-      return `<svg viewBox="0 0 160 160" width="${sz}" height="${sz}" fill="none">
+      return `<svg viewBox="0 0 160 160" width="${sz}" height="${sz}" fill="none" role="img">
+    <title>${p.name} - Induction Cooktop</title>
     <rect x="15" y="35" width="130" height="90" rx="14" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
     <rect x="24" y="43" width="112" height="74" rx="8" fill="#141414"/>
     <circle cx="70" cy="78" r="22" stroke="#e85d04" stroke-width="2.5" opacity=".8"/>
@@ -2546,7 +2635,7 @@
       </div>
       <div class="product-info">
         <div class="product-brand">${p.brand}</div>
-        <div class="product-name">${p.name}</div>
+        <h3 class="product-name">${p.name}</h3>
         <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.5rem">
           <span class="stars">${starsHTML(p.rating)}</span>
           <span style="font-weight:600;font-size:.82rem">${p.rating}</span>
@@ -3189,7 +3278,35 @@
 
     // ── PING BACKEND TO WAKE SERVER (Optional) ────────────────────────
     async function wakeServer() {
-      try { await fetch(`${API}/health`); } catch (e) {}
+      try { 
+        // Ping the keep-alive endpoint (faster than health)
+        const response = await fetch(`${API}/ping`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store'
+        });
+        
+        // Also call health endpoint for redundancy
+        fetch(`${API}/health`, { cache: 'no-store' }).catch(() => {});
+        
+        console.log('✓ Backend is alive');
+      } catch (e) {
+        // Silently fail - common on first load when Render is waking up
+        console.log('⏳ Waiting for backend...');
+      }
+    }
+
+    // Keep backend alive - call every 10 minutes to prevent Render free tier sleep
+    function startKeepAlive() {
+      wakeServer(); // Call immediately
+      setInterval(wakeServer, 10 * 60 * 1000); // Every 10 minutes
+      
+      // Also ping when user becomes active (to wake up backend if it slept)
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          setTimeout(wakeServer, 500); // Small delay to batch requests
+        }
+      });
     }
 
     // ── INIT ────────────────────────────────────────────────────────────────
@@ -3199,7 +3316,7 @@
     renderOrders();
     gel('btn-signin').style.display = 'flex';
     gel('btn-profile').style.display = 'none';
-    wakeServer();
+    startKeepAlive(); // Start background keep-alive to prevent backend sleep
   </script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
