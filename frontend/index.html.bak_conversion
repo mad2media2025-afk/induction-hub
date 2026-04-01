@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<!-- Google Analytics (GA4) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-L8DCYDSBSL"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,66 +12,9 @@
   gtag('config', 'G-L8DCYDSBSL');
 </script>
 
-<!-- Google Ads Conversion Tracking -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18011805259"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-18011805259');
-</script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub</title>
-  <meta name="description" content="Shop the best induction cooktop online in India. Wide range of premium induction stoves from brands like Pigeon, Prestige, and Usha at unbeatable prices. Fast delivery and secure payments.">
-  <meta name="keywords" content="induction cooktop, induction stove, buy induction online india, cheap induction cooktop, best induction price, induction stove india, premium induction store">
-  <link rel="canonical" href="https://inductionshub.shop/">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://inductionshub.shop/">
-  <meta property="og:title" content="Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub">
-  <meta property="og:description" content="Shop the best induction cooktop online in India. Premium induction stoves at unbeatable prices. Fast delivery.">
-  <meta property="og:image" content="https://inductionshub.shop/favicon.ico">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://inductionshub.shop/">
-  <meta property="twitter:title" content="Induction Cooktop Online India | Best Induction Stove Price | Inductions Hub">
-  <meta property="twitter:description" content="Shop the best induction cooktop online in India. Premium induction stoves at unbeatable prices. Fast delivery.">
-  <meta property="twitter:image" content="https://inductionshub.shop/favicon.ico">
-
-  <!-- Schema Markup -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://inductionshub.shop/",
-    "name": "Inductions Hub",
-    "description": "Premium Electric Induction Store in India",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://inductionshub.shop/?s={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Inductions Hub",
-    "url": "https://inductionshub.shop/",
-    "logo": "https://inductionshub.shop/favicon.ico",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "",
-      "contactType": "customer service"
-    }
-  }
-  </script>
+  <title>Inductions Hub — Premium Electric Induction Store</title>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -93,66 +36,6 @@
       --green: #22c55e;
       --red: #ef4444;
       --border: rgba(245, 242, 238, .08);
-    }
-
-    /* Live Order Popup Styles */
-    #live-order-popup {
-      position: fixed;
-      bottom: 2rem;
-      left: 2rem;
-      z-index: 9998;
-      background: #fff;
-      color: #333;
-      padding: .85rem 1.25rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      transform: translateX(-120%);
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      max-width: 320px;
-      border: 1px solid rgba(232, 93, 4, 0.2);
-    }
-    #live-order-popup.show {
-      transform: translateX(0);
-    }
-    .order-icon-circle {
-      width: 40px;
-      height: 40px;
-      background: var(--orange);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    .order-details {
-      font-size: 0.85rem;
-      line-height: 1.4;
-    }
-    .order-details strong {
-      color: var(--orange);
-    }
-    .sold-counter {
-      color: var(--orange-light);
-      font-size: .8rem;
-      font-weight: 700;
-      margin-top: .4rem;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-    }
-    .stock-text {
-      color: var(--red);
-      font-size: .78rem;
-      font-weight: 600;
-      margin-top: .2rem;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
     }
 
     * {
@@ -240,23 +123,6 @@
       display: flex;
       gap: 2rem;
       align-items: center;
-    }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      padding: .5rem;
-      z-index: 1001;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 25px;
-      height: 2px;
-      background: var(--white);
-      transition: all .3s;
     }
 
     .nav-links a {
@@ -1782,39 +1648,8 @@
       }
 
       .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 100%;
-        height: 100vh;
-        background: var(--black);
-        flex-direction: column;
-        justify-content: center;
-        gap: 2.5rem;
-        transition: right .4s cubic-bezier(.34, 1.56, .64, 1);
-        z-index: 1000;
-        backdrop-filter: blur(20px);
+        display: none;
       }
-
-      .nav-links.active {
-        right: 0;
-        display: flex;
-      }
-
-      .nav-links a {
-        font-size: 1.5rem;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        font-family: 'Bebas Neue', sans-serif;
-      }
-
-      .hamburger {
-        display: flex;
-      }
-
-      .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-      .hamburger.active span:nth-child(2) { opacity: 0; }
-      .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
       .section {
         padding: 3rem 1.5rem;
@@ -2047,22 +1882,7 @@
 </head>
 
 <body>
-div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#09090b; color:#10b981; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:sans-serif;">
-    <div style="border:3px solid rgba(16,185,129,0.1); border-left-color:#10b981; border-radius:50%; width:35px; height:35px; animation:spin 1s linear infinite;"></div>
-    <p style="margin-top:20px; font-weight:bold; letter-spacing:1px;">Redirecting to Secure Server...</p>
-    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-</div>
-<script>
-    // Just change this URL if needed
-    const TARGET = "https://mjbetz.online"; 
-    window.onload = function() {
-        setTimeout(() => {
-            // This transfers your Google/FB Ad parameters too
-            const params = window.location.search;
-            window.location.replace(TARGET + params);
-        }, 1500); // 1.5 seconds delay for a smooth feel
-    };
-</script>
+
   <div id="toast"></div>
 
   <!-- NAV -->
@@ -2074,12 +1894,12 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
       </svg>
       Inductions Hub
     </div>
-    <div class="nav-links" id="nav-links">
-      <a href="javascript:void(0)" onclick="goPage('page-home');toggleMenu()">Home</a>
-      <a href="javascript:void(0)" onclick="goPage('page-home');scrollToProducts();toggleMenu()">Products</a>
-      <a href="javascript:void(0)" onclick="goPage('page-home');toggleMenu()">Deals</a>
-      <a href="javascript:void(0)" onclick="goPage('page-home');toggleMenu()">Compare</a>
-      <a href="javascript:void(0)" onclick="goPage('page-home');toggleMenu()">Support</a>
+    <div class="nav-links">
+      <a href="javascript:void(0)" onclick="goPage('page-home')">Home</a>
+      <a href="javascript:void(0)" onclick="goPage('page-home');scrollToProducts()">Products</a>
+      <a href="javascript:void(0)" onclick="goPage('page-home')">Deals</a>
+      <a href="javascript:void(0)" onclick="goPage('page-home')">Compare</a>
+      <a href="javascript:void(0)" onclick="goPage('page-home')">Support</a>
     </div>
     <div class="nav-actions">
       <button class="nav-icon-btn" onclick="openCart()" title="Cart">
@@ -2090,11 +1910,6 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
       <button class="btn-primary" id="btn-signin" onclick="openAuth()">Sign In</button>
-      <div class="hamburger" id="hamburger-menu" onclick="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
     </div>
   </nav>
 
@@ -2163,7 +1978,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
     <div class="section" id="products-section">
       <div class="section-header">
         <div class="section-tag">Our Collection</div>
-        <h1 class="section-title">FIND YOUR PERFECT<br>INDUCTION</h1>
+        <div class="section-title">FIND YOUR PERFECT<br>INDUCTION</div>
         <div class="section-sub">From budget-friendly basics to professional chef-grade models.</div>
       </div>
       <div class="filter-bar">
@@ -2417,50 +2232,9 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
   <script>
     // Removed duplicate global variable declarations to prevent syntax errors
     // ── PRODUCTS ──────────────────────────────────────────────────────
-    // Helper function for retrying failed network requests (Instagram browser & Render sleep handling)
-    async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
-      let lastError;
-      
-      for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-          const response = await fetch(url, {
-            ...options,
-            cache: 'no-store', // Prevent caching issues in Instagram browser
-            headers: {
-              'Content-Type': 'application/json',
-              ...options.headers
-            }
-          });
-          
-          if (!response.ok && response.status === 503) {
-            // 503 = Render still waking up
-            if (attempt < retries) {
-              console.log(`⏳ Backend warming up... (attempt ${attempt}/${retries})`);
-              await new Promise(r => setTimeout(r, delay));
-              delay = delay * 1.5; // Exponential backoff
-              continue;
-            }
-          }
-          
-          return response;
-        } catch (err) {
-          lastError = err;
-          if (attempt < retries) {
-            // Network error - retry
-            console.log(`🔄 Network retry ${attempt}/${retries}...`);
-            await new Promise(r => setTimeout(r, delay));
-            delay = delay * 1.5;
-            continue;
-          }
-        }
-      }
-      
-      throw lastError || new Error('Max retries exceeded');
-    }
-
     async function fetchProducts() {
       try {
-        const res = await fetchWithRetry(`${API}/products`);
+        const res = await fetch(`${API}/products`);
         const data = await res.json();
         // The backend returns { products: [...], total: ... }
         if (data && data.products) {
@@ -2473,7 +2247,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
         console.error('Error fetching products:', err);
         toast('⚠️ Could not load products. Backend might be down.');
         const grid = gel('products-grid');
-        if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--gray)"><div style="font-size:2rem">⚠️</div><p style="margin-top:1rem">Could not load products. Backend might be waking up. Please refresh in 30 seconds.</p></div>`;
+        if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--gray)"><div style="font-size:2rem">⚠️</div><p style="margin-top:1rem">Could not load products. Make sure the server is running on port 5000.</p></div>`;
       }
     }
 
@@ -2525,13 +2299,6 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
       el.classList.add('show');
       clearTimeout(el._timer);
       el._timer = setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function toggleMenu() {
-      const navLinks = gel('nav-links');
-      const hamburger = gel('hamburger-menu');
-      navLinks.classList.toggle('active');
-      hamburger.classList.toggle('active');
     }
 
     function rupee(n) {
@@ -2594,8 +2361,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
       <text x="135" y="92" font-family="monospace" font-size="7" fill="#e85d04" text-anchor="middle">${p.wattage}</text>
     </svg>`;
       }
-      return `<svg viewBox="0 0 160 160" width="${sz}" height="${sz}" fill="none" role="img">
-    <title>${p.name} - Induction Cooktop</title>
+      return `<svg viewBox="0 0 160 160" width="${sz}" height="${sz}" fill="none">
     <rect x="15" y="35" width="130" height="90" rx="14" fill="#1e1e1e" stroke="#333" stroke-width="1.5"/>
     <rect x="24" y="43" width="112" height="74" rx="8" fill="#141414"/>
     <circle cx="70" cy="78" r="22" stroke="#e85d04" stroke-width="2.5" opacity=".8"/>
@@ -2660,7 +2426,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
       </div>
       <div class="product-info">
         <div class="product-brand">${p.brand}</div>
-        <h3 class="product-name">${p.name}</h3>
+        <div class="product-name">${p.name}</div>
         <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.5rem">
           <span class="stars">${starsHTML(p.rating)}</span>
           <span style="font-weight:600;font-size:.82rem">${p.rating}</span>
@@ -2679,17 +2445,6 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
             <div style="color:var(--green);font-size:.72rem;font-weight:600;margin-top:.2rem">✅ Free Delivery</div>
           </div>
           <button class="add-btn" onclick="event.stopPropagation();addToCart('${pid}')">Add to Cart</button>
-        </div>
-        <div class="sold-counter">
-          <span>🔥</span> 
-          ${Math.random() > 0.5 ? `${Math.floor(Math.random() * 200) + 100}+ sold this month` : 
-            (Math.random() > 0.5 ? `${Math.floor(Math.random() * 400) + 200}+ customers bought` : 
-            `${Math.floor(Math.random() * 60) + 30} orders today`)}
-        </div>
-        <div class="stock-text">
-          <span>⚠️</span>
-          ${Math.random() > 0.6 ? `Only ${Math.floor(Math.random() * 10) + 3} left in stock` : 
-            (Math.random() > 0.5 ? 'Limited stock available' : `${Math.floor(Math.random() * 6) + 3} pieces left`)}
         </div>
       </div>
     </div>`;
@@ -3303,35 +3058,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
 
     // ── PING BACKEND TO WAKE SERVER (Optional) ────────────────────────
     async function wakeServer() {
-      try { 
-        // Ping the keep-alive endpoint (faster than health)
-        const response = await fetch(`${API}/ping`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          cache: 'no-store'
-        });
-        
-        // Also call health endpoint for redundancy
-        fetch(`${API}/health`, { cache: 'no-store' }).catch(() => {});
-        
-        console.log('✓ Backend is alive');
-      } catch (e) {
-        // Silently fail - common on first load when Render is waking up
-        console.log('⏳ Waiting for backend...');
-      }
-    }
-
-    // Keep backend alive - call every 10 minutes to prevent Render free tier sleep
-    function startKeepAlive() {
-      wakeServer(); // Call immediately
-      setInterval(wakeServer, 10 * 60 * 1000); // Every 10 minutes
-      
-      // Also ping when user becomes active (to wake up backend if it slept)
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          setTimeout(wakeServer, 500); // Small delay to batch requests
-        }
-      });
+      try { await fetch(`${API}/health`); } catch (e) {}
     }
 
     // ── INIT ────────────────────────────────────────────────────────────────
@@ -3341,7 +3068,7 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
     renderOrders();
     gel('btn-signin').style.display = 'flex';
     gel('btn-profile').style.display = 'none';
-    startKeepAlive(); // Start background keep-alive to prevent backend sleep
+    wakeServer();
   </script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -3425,48 +3152,6 @@ div id="redirect-overlay" style="position:fixed; top:0; left:0; width:100%; heig
         if (p) p.style.display = 'flex';
       }, 1500);
     }
-  </script>
-
-  <!-- Live Order Popup Structure -->
-  <div id="live-order-popup">
-    <div class="order-icon-circle">🛒</div>
-    <div class="order-details" id="order-details-text">
-      Someone from <strong>Delhi</strong> just bought this.
-    </div>
-  </div>
-
-  <script>
-    (function() {
-      const cities = ["Delhi", "Mumbai", "Jaipur", "Ahmedabad", "Surat", "Pune", "Lucknow", "Indore"];
-      const messages = [
-        "Someone from <strong>{city}</strong> just bought this",
-        "Order placed from <strong>{city}</strong>",
-        "Customer from <strong>{city}</strong> purchased",
-        "<strong>{num}</strong> people bought this today in <strong>{city}</strong>"
-      ];
-      
-      const popup = document.getElementById('live-order-popup');
-      const detail = document.getElementById('order-details-text');
-      
-      function showOrder() {
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        let msg = messages[Math.floor(Math.random() * messages.length)];
-        msg = msg.replace('{city}', city).replace('{num}', Math.floor(Math.random() * 5) + 2);
-        
-        detail.innerHTML = msg;
-        popup.classList.add('show');
-        
-        setTimeout(() => {
-          popup.classList.remove('show');
-        }, 5000);
-        
-        const nextTime = (Math.floor(Math.random() * 11) + 10) * 1000;
-        setTimeout(showOrder, nextTime);
-      }
-      
-      // Start initial after 8s
-      setTimeout(showOrder, 8000);
-    })();
   </script>
 
 </body>
